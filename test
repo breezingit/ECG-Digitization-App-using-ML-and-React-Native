@@ -1,0 +1,16 @@
+{this.state.cards ?
+          (
+            <View style={styles.imgContainer}>
+              <Icon name="plus" size={100}/>
+              <Text style={{fontSize:30, paddingTop:10}}> Add ECG</Text>
+            </View>
+          )
+          :
+          (
+            <View style={styles.cardContainer}>
+              <HomeComp title="ECG1" person="Person 1"/>
+              <HomeComp title="ECG2" person="Person 2"/>
+            </View>
+          )
+
+          }
