@@ -37,7 +37,7 @@ export default function SearchArea({navigation}) {
   }
 
   const getData = async () => {
-    let response = await axios.get("http://172.22.15.128:5000/getdata");
+    let response = await axios.get("http://172.21.14.134:5000/getdata");
     const result = Object.values(response.data);
     setPeople(result);
     setDataLength(result.length);
@@ -143,7 +143,8 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignContent: "space-around",
-    padding: 15,
+    // padding: 15,
+    paddingHorizontal:15
   },
   imgContainer: {
     flex: 1,

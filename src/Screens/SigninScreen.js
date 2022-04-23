@@ -67,7 +67,7 @@ export default function Signin({ navigation }) {
   const signinnow = async () => {
     setShowActBar(true);
     let response = await axios
-      .post("http://172.22.15.128:5000/signin", { data })
+      .post("http://172.21.14.134:5000/signin", { data })
       .then((res) => {
         if (res.data == "NO") {
           setShowActBar(false);

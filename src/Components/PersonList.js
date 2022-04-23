@@ -2,11 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, FlatList } from 'react-native';
 import HomeComponent from './HomeComponent';
 import {usePeople, useSetPeopleContext} from '../Context/PeopleContext'
-import { Animated } from "react-native";
-
-
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
+import Wallet from './CardComponent/CardList';
 export default function PersonList({personLength}){
 
     // const [people,setPeople]=useState([]);
@@ -47,7 +43,7 @@ export default function PersonList({personLength}){
 
     return(
         <View style={{flex:1, justifyContent:"flex-end"}}>
-            <FlatList
+            {/* <FlatList
                 // scrollEventThrottle={16}
                 // bounces={false}
                 data={people}
@@ -57,12 +53,14 @@ export default function PersonList({personLength}){
                         deletePressed={deletePressed} 
                         openPressed={openPressed}
                         index={index}
-                        // y={y}
+                        y={y}
                     />
                 )}
                 keyExtractor={item => item["key"]}
                 // {...{ onScroll }} 
-            />
+            /> */}
+            <Wallet/>
+
         </View>
     )
 }

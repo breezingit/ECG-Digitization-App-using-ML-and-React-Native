@@ -36,7 +36,7 @@ export default class Results extends Component{
 
     getImage = async () => {
       
-        let response =await axios.get('http://172.22.15.128:5000/final')
+        let response =await axios.get('http://172.21.14.134:5000/final')
         // console.log(response.data)
         console.log("here")
         return response.data
@@ -44,7 +44,7 @@ export default class Results extends Component{
 
 
       saveImage=async (searchPhrase)=>{
-        let response =await  axios.post('http://172.22.15.128:5000/savename', { searchPhrase })
+        let response =await  axios.post('http://172.21.14.134:5000/savename', { searchPhrase })
           .then(res => {
             // console.log(res.data);
           })

@@ -17,14 +17,15 @@ const styles = StyleSheet.create({
   },
 });
 
-import HomeComponent from "./HomeComponent";
-
-const WalletCard = ({ y, index }) => {
+import HomeComponent from "../HomeComponent";
+import MyCard from "./Card";
+const WalletCard = ({  index , item, y, deletePressed, openPressed}) => {
   const position = Animated.subtract(index * CARD_HEIGHT, y);
   const isDisappearing = -CARD_HEIGHT;
   const isTop = 0;
   const isBottom = height - CARD_HEIGHT;
   const isAppearing = height;
+
   const translateY = Animated.add(
     Animated.add(
       y,
@@ -54,12 +55,7 @@ const WalletCard = ({ y, index }) => {
       style={[styles.card, { opacity, transform: [{ translateY }, { scale }] }]}
       key={index}
     >
-      <HomeComponent title={item} 
-                        deletePressed={deletePressed} 
-                        openPressed={openPressed}
-                        index={index}
-                        y={y}
-                    />
+      <MyCard title={item} index={index} deletePressed={deletePressed} openPressed={openPressed} />
     </Animated.View>
   );
 };

@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     },
     drawerList:{
         flex:1,
-        backgroundColor:"#fff",
+        backgroundColor:"black",
         paddingTop:10
     }
   });

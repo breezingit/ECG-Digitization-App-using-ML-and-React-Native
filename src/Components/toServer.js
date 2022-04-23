@@ -5,7 +5,7 @@ import * as FS from "expo-file-system";
 export default async function toServer(mediaFile){
         let type = mediaFile.type;
         let schema = "http://";
-        let host = "172.22.15.128";
+        let host = "172.21.14.134";
         let route = "";
         let port = "5000";
         let url = "";

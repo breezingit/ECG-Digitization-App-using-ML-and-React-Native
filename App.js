@@ -164,7 +164,7 @@ export default function App() {
       <PaperProvider theme={PaperDarkTheme}>
         <PeopleProvider>
           <NavigationContainer theme={DarkTheme}>
-            <HomeStack />
+            <LoginStack />
           </NavigationContainer>
         </PeopleProvider>
       </PaperProvider>

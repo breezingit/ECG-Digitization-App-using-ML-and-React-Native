@@ -145,7 +145,7 @@ def signin():
 #     conn.close()
 
 if __name__ == '__main__':
-      app.run(host='172.22.15.128',port='5000')
+      app.run(host='172.21.14.134',port='5000')
 
 # psql -h dep.postgres.database.azure.com -d postgres -U yashpriyadarshi (pass: dep:1234)
 
