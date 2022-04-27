@@ -17,6 +17,7 @@ import LoginScreen from "./src/Screens/LoginScreen";
 import Signin from "./src/Screens/SigninScreen";
 import Signup from "./src/Screens/SignupScreen";
 import OTP from "./src/Screens/OTPScreen";
+import OpenScreen from "./src/Screens/OpenImageScreen";
 import { LogBox } from "react-native";
 import {
   DarkTheme as PaperDarkTheme,
@@ -77,6 +78,14 @@ export default function App() {
         <Stack.Screen
           name="Search"
           component={SearchScreen}
+          // options={{
+          //   drawerItemStyle: { height: 0 },
+          // }}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Image"
+          component={OpenScreen}
           // options={{
           //   drawerItemStyle: { height: 0 },
           // }}
@@ -164,7 +173,7 @@ export default function App() {
       <PaperProvider theme={PaperDarkTheme}>
         <PeopleProvider>
           <NavigationContainer theme={DarkTheme}>
-            <LoginStack />
+            <HomeStack />
           </NavigationContainer>
         </PeopleProvider>
       </PaperProvider>

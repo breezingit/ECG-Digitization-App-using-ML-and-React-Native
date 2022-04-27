@@ -1,12 +1,15 @@
 from flask import Flask, Response, request, jsonify
-from Scanner import getScanned 
+# from Scanner import getScanned 
 import base64
 from io import BytesIO
 from PIL import Image
+import numpy as np
+# import 
+import cv2
 import psycopg2
 import json
 from otp import *
-
+from test6 import getScanned
 app = Flask(__name__)
 
 @app.route("/image", methods=['GET', 'POST'])
@@ -43,8 +46,8 @@ def final():
         imageData=data[0]
         
     
-    
     image=getScanned(imageData)
+    image.save("gottem.jpg")
     buffered = BytesIO()
     image.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue())
@@ -133,6 +136,38 @@ def signin():
     else:
         return "NO"
     
+@app.route("/openimage", methods=["POST"])
+def openimage():
+    
+    data =request.get_json()
+    print(data["name"])
+    # return "HELLO"
+    conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
+                        password = "dep:1234", host = "dep.postgres.database.azure.com")
+        
+    cur = conn.cursor()
+    query= """SELECT biodata FROM Images WHERE Name= '{}'""".format(data["name"])
+    
+    cur.execute(query)
+    
+    rows = cur.fetchall()
+    
+    imageData=""
+    for data in rows:
+        imageData=data[0]
+  
+    img_str=bytes(imageData)
+    # pil_image = Image.open(BytesIO(bytes(imageData)))
+    # open_cv_image = np.array(pil_image) 
+    # img1 = open_cv_image[:, :, ::-1].copy() 
+    # buffered = BytesIO()
+    # pil_image.save(buffered, format="JPEG")
+    # img_str = base64.b64encode(buffered.getvalue())
+    # img1.save("pillow.jpg")
+    # cv2.imwrite("filename.jpg", pil_image)
+    return img_str
+    # return img_str
+   
 # @app.route("/cancelimage", methods="POST")
 # def cancelimage():
 #     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
@@ -145,7 +180,7 @@ def signin():
 #     conn.close()
 
 if __name__ == '__main__':
-      app.run(host='172.21.14.134',port='5000')
+      app.run(host='172.26.12.119',port='5000')
 
 # psql -h dep.postgres.database.azure.com -d postgres -U yashpriyadarshi (pass: dep:1234)
 

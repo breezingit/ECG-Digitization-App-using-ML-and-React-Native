@@ -45,6 +45,11 @@ export default function MyCard(props) {
   // const title=props.title
   // const upperTitle= title.toUpper()
   // return (<Image style={styles.card} source={require("../../../assets/backim.jpg")}/>)
+
+  const printName=(name)=>{
+    props.openPressed(name)
+  }
+
   return (
     <Card
       style={[
@@ -69,7 +74,8 @@ export default function MyCard(props) {
                 ? [styles.buttons, { backgroundColor: "#303030" }]
                 : [styles.buttons, { backgroundColor: "#0098db" }],
             ]}
-            onPress={(async) => props.openPressed(props.index)}
+            onPress={(async)=>printName(props.title)}
+            // onPress={(async) => props.openPressed(props.item)}
           >
             <Text
               style={[
@@ -87,7 +93,7 @@ export default function MyCard(props) {
                 ? [styles.buttons, { backgroundColor: "#303030" }]
                 : [styles.buttons, { backgroundColor: "#0098db" }],
             ]}
-            onPress={(async) => props.deletePressed(props.index)}
+            onPress={(async) => props.deletePressed(props.item)}
           >
             <Text
               style={[

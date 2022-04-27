@@ -37,7 +37,7 @@ export default function SearchArea({navigation}) {
   }
 
   const getData = async () => {
-    let response = await axios.get("http://172.21.14.134:5000/getdata");
+    let response = await axios.get("http://172.26.12.119:5000/getdata");
     const result = Object.values(response.data);
     setPeople(result);
     setDataLength(result.length);

@@ -3,14 +3,16 @@ import { View, Text, SafeAreaView, TouchableOpacity, FlatList } from 'react-nati
 import HomeComponent from './HomeComponent';
 import {usePeople, useSetPeopleContext} from '../Context/PeopleContext'
 import Wallet from './CardComponent/CardList';
-export default function PersonList({personLength}){
+import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
+export default function PersonList(){
 
     // const [people,setPeople]=useState([]);
     // const y = new Animated.Value(0);
     // const onScroll = Animated.event([{ nativeEvent: { contentOffset: { y } } }], {
     //     useNativeDriver: true,
     //   });
-
+    const navigation = useNavigation();
     const people=usePeople()
     const setPeople=useSetPeopleContext()
     const [initialRender, setInitialRender]= useState(true)
@@ -37,8 +39,23 @@ export default function PersonList({personLength}){
         
     }
 
-    const openPressed=(name)=>{
-        console.log(name)
+    // openPressed=async (name)=>{
+    //     console.log(name)
+    //     let response =await  axios.post('http://172.21.14.134:5000/openimage', { name })
+    //       .then(res => {
+    //         navigation.navigate("Image", {
+    //             imageData: res.data,
+    //           });
+            
+    //       })
+        
+    //     // return response.data
+    // }
+
+    openPressed= (name)=>{
+        navigation.navigate("Image", {
+                        pname: name,
+                      });
     }
 
     return(
@@ -59,7 +76,7 @@ export default function PersonList({personLength}){
                 keyExtractor={item => item["key"]}
                 // {...{ onScroll }} 
             /> */}
-            <Wallet/>
+            <Wallet openPressed={openPressed} deletePressed={deletePressed} />
 
         </View>
     )

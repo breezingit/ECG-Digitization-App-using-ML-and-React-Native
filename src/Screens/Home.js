@@ -8,6 +8,7 @@ import {
   Text,
   StatusBar,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { BackHandler } from "react-native";
 
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     right: 30,
     // alignContent:"flex-end"
   },
-  homebutton: { paddingLeft: 15 },
+  homebutton: { padding: 15},
   container: {
     flex: 1,
     // backgroundColor: "black",
@@ -136,6 +137,9 @@ export class App extends Component {
     }
     if (result.type == "image") {
       // await this.toServer({
+      // this.props.navigation.navigate("Results",{
+      //   image:result
+      // });
       await toServer({
         type: result.type,
         base64: result.base64,
@@ -160,21 +164,17 @@ export class App extends Component {
 
         {this.state.clicked === false ? (
           <View style={styles.homebuttons}>
-            <Icon.Button
-              name="camera"
-              backgroundColor="#42c0fb"
-              size={30}
-              onPress={async () => this.props.navigation.navigate("Camera")}
+            <TouchableOpacity
               style={styles.homebutton}
-            />
+              onPress={async () => this.props.navigation.navigate("Camera")}
+            >
+              <Icon name="camera" backgroundColor="#42c0fb" size={30} />
+            </TouchableOpacity>
+
 
             {this.state.cameraRollPer ? (
-              <Icon.Button
-                name="image"
-                backgroundColor="#42c0fb"
-                size={30}
+              <TouchableOpacity
                 style={styles.homebutton}
-                // onPress={async ()=> navigation.navigate('Gallery')}
                 onPress={async () => {
                   await this.pickMedia();
                   this.setState((s, p) => {
@@ -184,8 +184,11 @@ export class App extends Component {
                     };
                   });
                 }}
-              />
+              >
+                <Icon name="image" backgroundColor="#42c0fb" size={30} />
+              </TouchableOpacity>
             ) : (
+
               <Text style={styles.buttonText}>Pick Image</Text>
             )}
           </View>
