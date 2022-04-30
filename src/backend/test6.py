@@ -49,10 +49,10 @@ def taking_input(path):
     return img
 
 def Extracting_R_Channel(img):
-    print(img.shape)
+    # print(img.shape)
     # img=cv2.cvtColor(img, cv2.COLOR_BGRA2HSV)
     # img=cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
-    (R,G,B,A) = cv2.split(img)
+    # (R,G,B,A) = cv2.split(img)
     return img
     # return cv2.cvtColor(R, cv2.COLOR_GRAY2BGR)
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, FlatList } from 'react-native';
 import HomeComponent from './HomeComponent';
-import {usePeople, useSetPeopleContext} from '../Context/PeopleContext'
-import Wallet from './CardComponent/CardList';
+import {usePeople, useSetPeopleContext, useNameDateData} from '../Context/PeopleContext'
+// import Wallet from './CardComponent/CardList';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 export default function PersonList(){
@@ -13,9 +13,7 @@ export default function PersonList(){
     //     useNativeDriver: true,
     //   });
     const navigation = useNavigation();
-    const people=usePeople()
-    const setPeople=useSetPeopleContext()
-    const [initialRender, setInitialRender]= useState(true)
+    const people=useNameDateData()
     // const [personName,setPersonName]=useState(people)
 
     // const generateArray=()=>{
@@ -53,6 +51,7 @@ export default function PersonList(){
     // }
 
     openPressed= (name)=>{
+
         navigation.navigate("Image", {
                         pname: name,
                       });
@@ -60,23 +59,22 @@ export default function PersonList(){
 
     return(
         <View style={{flex:1, justifyContent:"flex-end"}}>
-            {/* <FlatList
-                // scrollEventThrottle={16}
-                // bounces={false}
+            <FlatList
                 data={people}
-                renderItem={({item,index})=>(
+                renderItem={({index,item})=>(
                     ////
-                    <HomeComponent title={item} 
+                    <HomeComponent title={item[0]} 
                         deletePressed={deletePressed} 
                         openPressed={openPressed}
-                        index={index}
-                        y={y}
+                        index={item}
                     />
                 )}
                 keyExtractor={item => item["key"]}
-                // {...{ onScroll }} 
-            /> */}
-            <Wallet openPressed={openPressed} deletePressed={deletePressed} />
+            />
+
+
+            {/* This is for the wallet animation */}
+            {/* <Wallet openPressed={openPressed} deletePressed={deletePressed} /> */}
 
         </View>
     )

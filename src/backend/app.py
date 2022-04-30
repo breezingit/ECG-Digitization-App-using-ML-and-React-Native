@@ -94,7 +94,7 @@ def getData():
                         password = "dep:1234", host = "dep.postgres.database.azure.com")
         
     cur = conn.cursor()
-    query="""SELECT Name FROM Images;"""
+    query="""SELECT Name, Date, Result FROM Images;"""
     cur.execute(query)
     rows = cur.fetchall()
     
@@ -102,9 +102,14 @@ def getData():
     nameList={}
     count=0
     for data in rows:
-        nameList[count]=data[0]
+        nameList[count]=data
         count+=1
- 
+    
+    newNameList={}
+    for index in nameList:
+        item= list(nameList[index])
+        item[1]=str(item[1])
+        nameList[index]=item
     return nameList
     
 @app.route("/signin", methods=["POST"])
@@ -167,7 +172,25 @@ def openimage():
     # cv2.imwrite("filename.jpg", pil_image)
     return img_str
     # return img_str
-   
+
+@app.route("/delete", methods=["POST"])
+def delete():
+    
+    data= request.get_json()
+    
+    conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
+                        password = "dep:1234", host = "dep.postgres.database.azure.com")
+        
+    cur = conn.cursor()
+    query= """DELETE FROM Images WHERE Name= '{}'""".format(data["name"])
+    
+    cur.execute(query)
+    
+    conn.commit()
+    conn.close()
+    
+    return "Name Deleted"
+
 # @app.route("/cancelimage", methods="POST")
 # def cancelimage():
 #     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
@@ -180,7 +203,7 @@ def openimage():
 #     conn.close()
 
 if __name__ == '__main__':
-      app.run(host='172.26.12.119',port='5000')
+      app.run(host='172.21.12.205',port='5000')
 
 # psql -h dep.postgres.database.azure.com -d postgres -U yashpriyadarshi (pass: dep:1234)
 
@@ -197,4 +220,7 @@ if __name__ == '__main__':
 # );
 # INSERT INTO USERS(Name, Email) VALUES('Yash','yashpriyadarshi465@gmail.com');
 # biodata bytea
+# ALTER TABLE Images 
+# ADD COLUMN Date DATE DEFAULT CURRENT_TIMESTAMP,
+# ADD COLUMN Result TEXT DEFAULT 'ISCHEMIC';
 

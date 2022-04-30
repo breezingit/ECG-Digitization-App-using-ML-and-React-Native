@@ -46,7 +46,8 @@ export default class Results extends Component {
   }
 
   getImage = async () => {
-    let response = await axios.get("http://172.26.12.119:5000/final");
+    let response = await axios.get("http://172.21.12.205:5000/final");
+    // let response = await axios.get("https://dep-ecg.herokuapp.com/final");
     // console.log(response.data)
 
     return response.data;
@@ -54,7 +55,8 @@ export default class Results extends Component {
 
   saveImage = async (searchPhrase) => {
     let response = await axios
-      .post("http://172.26.12.119:5000/savename", { searchPhrase })
+      .post("http://172.21.12.205:5000/savename", { searchPhrase })
+      // .post("https://dep-ecg.herokuapp.com/savename", { searchPhrase })
       .then((res) => {
         // console.log(res.data);
       });

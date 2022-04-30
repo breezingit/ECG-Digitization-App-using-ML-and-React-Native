@@ -67,7 +67,8 @@ export default function Signin({ navigation }) {
   const signinnow = async () => {
     setShowActBar(true);
     let response = await axios
-      .post("http://172.26.12.119:5000/signin", { data })
+      .post("http://172.21.12.205:5000/signin", { data })
+      // .post("https://dep-ecg.herokuapp.com/signin", { data })
       .then((res) => {
         if (res.data == "NO") {
           setShowActBar(false);

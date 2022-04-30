@@ -9,7 +9,12 @@ import {
   StatusBar,
   ActivityIndicator,
   TouchableOpacity,
+  Dimensions,
+  Modal,
 } from "react-native";
+
+const { width } = Dimensions.get("window");
+
 import { BackHandler } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -22,6 +27,8 @@ import SearchBar from "../Components/Searchbar";
 import toServer from "../Components/toServer";
 import List from "../Components/List";
 import SearchArea from "../Components/SearchArea";
+import OptionsModal from "../Components/Modal/OptionsModal";
+import AddPatientModal from "../Components/Modal/AddPatientModal";
 
 const styles = StyleSheet.create({
   homecontainer: {
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     right: 30,
     // alignContent:"flex-end"
   },
-  homebutton: { padding: 15},
+
   container: {
     flex: 1,
     // backgroundColor: "black",
@@ -73,6 +80,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 5,
   },
+  patientButton: {
+    position: "absolute",
+    bottom: 40,
+    // left:width/2?
+    alignSelf: "center",
+    backgroundColor: "white",
+    width: width / 2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#0098db",
+  },
+  homebutton: { padding: 15 },
 });
 
 export class App extends Component {
@@ -83,6 +104,7 @@ export class App extends Component {
       cameraRollPer: null,
       disableButton: false,
       clicked: false,
+      modalVisible: false,
     };
   }
   async componentDidMount() {
@@ -91,6 +113,7 @@ export class App extends Component {
       return {
         cameraRollPer: status === "granted",
         disableButton: false,
+        isPatientModalVisible: false,
       };
     });
   }
@@ -157,42 +180,66 @@ export class App extends Component {
     this.props.navigation.navigate("Results");
   };
 
+  changePatientModalVisible = () => {
+    this.setState((prevState) => ({ 
+      isPatientModalVisible: !prevState.isPatientModalVisible
+   }))
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.homecontainer}>
+
         <SearchArea navigation={this.props.navigation} />
 
-        {this.state.clicked === false ? (
-          <View style={styles.homebuttons}>
-            <TouchableOpacity
-              style={styles.homebutton}
-              onPress={async () => this.props.navigation.navigate("Camera")}
-            >
-              <Icon name="camera" backgroundColor="#42c0fb" size={30} />
-            </TouchableOpacity>
+        <TouchableOpacity style={styles.patientButton} onPress={this.changePatientModalVisible}>
+          {
+          this.state.isPatientModalVisible === true ?
+          
+            (this.state.clicked === false ? (
+              <View style={{flexDirection:"row"}}>
+                <TouchableOpacity
+                  style={styles.homebutton}
+                  onPress={async () => this.props.navigation.navigate("Camera")}
+                >
+                  <Icon name="camera" backgroundColor="#42c0fb" size={30} />
+                </TouchableOpacity>
+    
+    
+                {this.state.cameraRollPer ? (
+                  <TouchableOpacity
+                  style={styles.homebutton}
+                    onPress={async () => {
+                      await this.pickMedia();
+                      this.setState((s, p) => {
+                        return {
+                          cameraRollPer: s.cameraRollPer,
+                          disableButton: false,
+                          isPatientModalVisible: false
+                        };
+                      });
+                    }}
+                  >
+                    <Icon name="image" backgroundColor="#42c0fb" size={30} />
+                  </TouchableOpacity>
+                ) : (
+    
+                  <Text style={styles.buttonText}>Pick Image</Text>
+                )}
+              </View>
+            ) : null)
+          
+          :
+          (
+            <Text
+            style={{ paddingVertical: 20, fontSize: 15, fontWeight: "bold" }}
+          >
+            ADD PATIENT
+          </Text>
+          )
+        }
+        </TouchableOpacity>
 
-
-            {this.state.cameraRollPer ? (
-              <TouchableOpacity
-                style={styles.homebutton}
-                onPress={async () => {
-                  await this.pickMedia();
-                  this.setState((s, p) => {
-                    return {
-                      cameraRollPer: s.cameraRollPer,
-                      disableButton: false,
-                    };
-                  });
-                }}
-              >
-                <Icon name="image" backgroundColor="#42c0fb" size={30} />
-              </TouchableOpacity>
-            ) : (
-
-              <Text style={styles.buttonText}>Pick Image</Text>
-            )}
-          </View>
-        ) : null}
       </SafeAreaView>
     );
   }
