@@ -17,6 +17,8 @@ import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import DeleteModal from "../Components/Modal/DeleteModal";
 
+const customData = require("../data.json")
+
 function OpenScreen() {
   const navigation = useNavigation();
   const route = useRoute();
@@ -24,11 +26,18 @@ function OpenScreen() {
   const [imageData, setImageData] = useState(null);
   const [personData, setPersonData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const IP = customData["IP"]
+
   getImage = async (pdata) => {
     setPersonData(pdata);
     const name = pdata[0];
+
+    const href= [IP + "openImage"]
+
     let response = await axios
       .post("http://172.21.12.205:5000/openimage", { name })
+      // .post(`${href}`, { name })
       // let response =await  axios.post('https://dep-ecg.herokuapp.com/openimage', { name })
       .then((res) => {
         // console.log(res.data)
@@ -44,8 +53,10 @@ function OpenScreen() {
 
   const deletePressed = async () => {
     const name = personData[0];
+    const href= [IP + "delete"]
+
     let response = await axios
-      .post("http://172.21.12.205:5000/delete", { name })
+      .post(`${href}`, { name })
       // let response =await  axios.post('https://dep-ecg.herokuapp.com/openimage', { name })
       .then((res) => {});
 

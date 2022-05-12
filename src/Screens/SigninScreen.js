@@ -17,6 +17,8 @@ import axios from "axios";
 import ErrorModal from "../Components/Modal/ErrorModal";
 import { useSetAuth } from "../Context/AuthContext";
 
+const customData = require("../data.json")
+
 export default function Signin({ navigation }) {
   const [data, setData] = useState({
     email: "",
@@ -65,9 +67,13 @@ export default function Signin({ navigation }) {
   const setAuth= useSetAuth()
 
   const signinnow = async () => {
+
+    const IP=customData["IP"]
+    const href = [IP + "signin"]
+
     setShowActBar(true);
     let response = await axios
-      .post("http://172.21.12.205:5000/signin", { data })
+      .post(`${href}`, { data })
       // .post("https://dep-ecg.herokuapp.com/signin", { data })
       .then((res) => {
         if (res.data == "NO") {

@@ -80,7 +80,7 @@ def savename():
     for data in rows:
         imageData=data[0]
         
-    query = """INSERT INTO Images(Name,biodata) VALUES(%s,%s);"""
+    query = """INSERT INTO Images(Name,biodata, Date) VALUES(%s,%s, CURRENT_DATE);"""
     val=(res["searchPhrase"], imageData)
     cur.execute(query,val)
     conn.commit()

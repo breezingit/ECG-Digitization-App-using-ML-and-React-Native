@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
-import { ThemeContext } from "react-native-elements";
-import { set } from "react-native-reanimated";
 
 const PeopleContext = React.createContext();
 const setPeopleContext = React.createContext();
+const NameDateDataContext = React.createContext();
+const setNameDateDataContext = React.createContext();
+const incrementContext=React.createContext();
+const setIncrementContext=React.createContext();
 
 export function usePeople() {
   return useContext(PeopleContext);
@@ -12,8 +14,6 @@ export function usePeople() {
 export function useSetPeopleContext() {
   return useContext(setPeopleContext);
 }
-const NameDateDataContext = React.createContext();
-const setNameDateDataContext = React.createContext();
 
 export function useNameDateData() {
   return useContext(NameDateDataContext);
@@ -23,17 +23,31 @@ export function useSetNameDateData() {
   return useContext(setNameDateDataContext);
 }
 
+export function useIncrement() {
+  return useContext(incrementContext);
+}
+
+export function useSetIncrement() {
+  return useContext(setIncrementContext);
+}
+
 export function PeopleProvider({ children }) {
   const [people, setPeople] = useState({});
 
   const [nameDateData, setNameDateData] = useState({});
+
+  const [increment, setIncrement] = useState(false);
 
   return (
     <PeopleContext.Provider value={people}>
       <setPeopleContext.Provider value={setPeople}>
         <NameDateDataContext.Provider value={nameDateData}>
           <setNameDateDataContext.Provider value={setNameDateData}>
-            {children}
+            <incrementContext.Provider value={increment}>
+              <setIncrementContext.Provider value={setIncrement}>
+                {children}
+              </setIncrementContext.Provider>
+            </incrementContext.Provider>
           </setNameDateDataContext.Provider>
         </NameDateDataContext.Provider>
       </setPeopleContext.Provider>

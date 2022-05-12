@@ -18,31 +18,29 @@ import {
   useSetPeopleContext,
   useNameDateData,
   useSetNameDateData,
+  useIncrement
 } from "../Context/PeopleContext";
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
 import OptionsModal from "./Modal/OptionsModal";
 import AddPatientModal from "./Modal/AddPatientModal";
 
+const customData= require('../data.json')
+
 export default function SearchArea({ navigation }) {
-  const [searchPhrase, setSearchPhrase] = useState("");
-  const [clicked, setClicked] = useState(false);
+  
+  const IP = customData["IP"]
 
   const [dataLength, setDataLength] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isPatientModalVisible, setIsPatientModalVisible] = useState(true);
   const [sortBy, setSortBy] = useState("");
   const people = usePeople();
   const setPeople = useSetPeopleContext();
-  const nameDateData = useNameDateData();
   const setNameDateData = useSetNameDateData();
+  const increment=useIncrement();
   const isFocused = useIsFocused();
 
-  // let clicked= false
-  // const setClicked=()=>{
-  //   clicked=!clicked
-  // }
 
   const generateKey = (pre) => {
     return `${pre}_${new Date().getTime()}`;
@@ -53,73 +51,46 @@ export default function SearchArea({ navigation }) {
   }
 
   const getData = async () => {
-    // let response = await axios.get("https://dep-ecg.herokuapp.com/getdata");
-    let response = await axios.get("http://172.21.12.205:5000/getdata");
+
+    setIsLoading(true);
+
+    const href= ["" + IP + "getdata"]
+    let response = await axios.get(`${href}`);
     const result = Object.values(response.data);
     // console.log(response.data)
     const resultFinal = result.map(myFunction);
-    // for(var i=0; i< result.length; i++){
-    //   resultFinal[i]=resultFinal[i]
-    // }
-    console.log(sortBy)
-    if(sortBy==="Name"){
-      result.sort(compare)
-    }
 
-    console.log(resultFinal)
     setPeople(resultFinal);
     setDataLength(result.length);
     setNameDateData(result);
 
+    setIsLoading(false)
 
-    // generateArray()
-    // return response.data
   };
 
-  function compare( a, b ) {
-    if ( a[0] < b[0] ){
-      return -1;
-    }
-    if ( a[0] > b[0] ){
-      return 1;
-    }
-    return 0;
-  }
+
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     setIsLoading(true);
+  //     getData();
+
+  //     setTimeout(() => {
+  //       setIsLoading(false);
+  //     }, 5000);
+  //   }
+  // }, [isFocused]);
+
+  useEffect(()=>{
+    
+    // setIsLoading(true);
+
+    getData()
+
+    // setIsLoading(false)
+
+  }, [increment])
 
 
-  useEffect(() => {
-    if (isFocused) {
-      setIsLoading(true);
-      getData();
-      console.log(sortBy)
-      if(sortBy==="Name"){
-        console.log("sortBy")
-        
-      }
-
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 5000);
-    }
-  }, [isFocused, sortBy]);
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const onBackPress = () => {
-  //       if (clicked) {
-  //         setClicked(false);
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-  //     };
-
-  //     BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-  //     return () =>
-  //       BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-  //   }, [clicked])
-  // );
   const changeModalVisible = (bool) => {
     setIsModalVisible(bool);
   };
@@ -171,28 +142,8 @@ export default function SearchArea({ navigation }) {
           <Text style={{ fontSize: 30, paddingTop: 10 }}> Add ECG</Text>
         </View>
       ) : (
-        <PersonList personLength={dataLength} />
+        <PersonList sortBy= {sortBy} />
       )}
-      {/* {clicked ? (
-        <List
-          searchPhrase={searchPhrase}
-          data={usePeople()}
-          setClicked={setClicked}
-        />
-      ) : isLoading === true ? (
-        <ActivityIndicator
-          size="large"
-          color="#0000ff"
-          style={{ flex: 1, justifyContent: "center" }}
-        />
-      ) : people.length === 0 ? (
-        <View style={styles.imgContainer}>
-          <Icon name="plus" size={100} />
-          <Text style={{ fontSize: 30, paddingTop: 10 }}> Add ECG</Text>
-        </View>
-      ) : (
-        <PersonList personLength={dataLength} />
-      )} */}
     </View>
   );
 }

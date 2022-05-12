@@ -15,67 +15,66 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import { BlurView } from "@react-native-community/blur";
 // import LottieView from 'lottie-react-native'
 import axios from "axios";
-import SimpleModal from "./src/Components/Modal/SimpleModal";
+import SimpleModal from "../Components/Modal/SimpleModal";
 // import { useRoute } from "@react-navigation/native";
-import toServer from "./src/Components/toServer";
-export default class Results extends Component {
-  constructor(props) {
-    super(props);
+import toServer from "../Components/toServer";
+import { useIncrement, useSetIncrement } from "../Context/PeopleContext";
 
-    this.state = {
-      imageData: null,
-      disableButton: false,
-      isModalVisible: false,
-      personName: "",
-    };
-  }
+const customData=require("../data.json")
 
-  async componentDidMount() {
-    // const route = useconst Route();
-    // const result= this.props.navigation.getParam("image")
-    // const result = route.image;
 
-    // await toServer({
-    //   type: result.type,
-    //   base64: result.base64,
-    //   uri: result.uri,
-    // });
+export default function Results({navigation}){
 
-    const data = await this.getImage();
-    this.setState({ imageData: data, disableButton: true });
-  }
+  const [imageData, setImageData] =useState(null)
+  const [disableButton, setDisableButton] =useState(false)
+  const [isModalVisible, setIsModalVisible] =useState(false)
+  const [personName, setPersonName] =useState("")
+  const increment=useIncrement()
+  const setIncrement= useSetIncrement()
 
-  getImage = async () => {
-    let response = await axios.get("http://172.21.12.205:5000/final");
+  useEffect(()=>{
+
+      getImage()
+
+  },[])
+
+  const getImage = async () => {
+
+    const IP = customData["IP"]
+    const href= [IP + "final"]
+    let response = await axios.get(`${href}`);
     // let response = await axios.get("https://dep-ecg.herokuapp.com/final");
     // console.log(response.data)
 
-    return response.data;
+    // return response.data;
+    setImageData(response.data)
+    setDisableButton(true)
   };
 
-  saveImage = async (searchPhrase) => {
+
+
+
+  const saveImage = async (searchPhrase) => {
+    const IP = customData["IP"]
+    const href= [IP + "savename"]
+
+
     let response = await axios
-      .post("http://172.21.12.205:5000/savename", { searchPhrase })
+      .post(`${href}`, { searchPhrase })
       // .post("https://dep-ecg.herokuapp.com/savename", { searchPhrase })
       .then((res) => {
         // console.log(res.data);
       });
     // console.log(response.data)
     // return response.data
-    this.props.navigation.navigate("Home");
+    setIncrement(!increment)
+    navigation.navigate("Home");
   };
 
-  changeModalVisible = (bool) => {
-    this.setState({ isModalVisible: bool });
+  const changeModalVisible = (bool) => {
+    setIsModalVisible(bool)
   };
 
-  // fetch("http://192.168.75.4:5000/final")
-  //     .then(function (response) {
-  //         return response.text();
-  //     }).then(function (text) {
-  //         setData(text)
-  //     });
-  render() {
     return (
       <SafeAreaView style={styles.container}>
         {/* <BlurView intensity={90} tint="dark" style={styles.blurContainer}> */}
@@ -83,35 +82,34 @@ export default class Results extends Component {
         <Modal
           transparent={true}
           animationType="fade"
-          visible={this.state.isModalVisible}
-          nRequestClose={() => this.changeModalVisible(false)}
+          visible={isModalVisible}
+          nRequestClose={() => changeModalVisible(false)}
         >
           <SimpleModal
-            searchPhrase={this.personName}
-            saveImage={this.saveImage}
-            changeModalVisible={this.changeModalVisible}
+            saveImage={saveImage}
+            changeModalVisible={changeModalVisible}
           />
         </Modal>
 
-        {this.state.disableButton === false ? (
+        {disableButton === false ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
-          <View>
+          <View style={{justifyContent:"center", alignContent:"center"}}>
             <Image
-              source={{ uri: "data:image/jpeg;base64," + this.state.imageData }}
+              source={{ uri: "data:image/jpeg;base64," + imageData }}
               style={styles.image}
             />
 
             <View style={styles.buttons}>
               <TouchableOpacity
-                onPress={async () => this.props.navigation.navigate("Home")}
-                style={styles.button}
+                onPress={async () => navigation.navigate("Home")}
+                style={styles.button1}
               >
                 <Text>CANCEL</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={async () => this.changeModalVisible(true)}
-                style={styles.button}
+                onPress={async () => changeModalVisible(true)}
+                style={styles.button2}
               >
                 <Text>Save ECG</Text>
               </TouchableOpacity>
@@ -122,7 +120,7 @@ export default class Results extends Component {
       </SafeAreaView>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -133,15 +131,30 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: "row",
-    padding: 35,
-    justifyContent: "space-between",
+    position: "absolute",
+    bottom: 50,
+    left : 150
   },
-  button: {
+  button1: {
     // backgroundColor:"#FB3E00",
     backgroundColor: "#42c0fb",
     padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
+    borderRadius: 20,
+    marginHorizontal: 20
+    // alignItems: "center",
+    // position: "absolute",
+    // left: 30,
+    // bottom: 10,
+  },
+  button2: {
+    // backgroundColor:"#FB3E00",
+    backgroundColor: "#42c0fb",
+    padding: 15,
+    borderRadius: 20,
+    // alignItems: "center",
+    // position: "absolute",
+    // right: 30,
+    // bottom: 10,
   },
 
   image: {
