@@ -17,6 +17,7 @@ python3 app.py
 ```
 ## - Frontend
 ```
+npm i
 npm start
 ```
 
