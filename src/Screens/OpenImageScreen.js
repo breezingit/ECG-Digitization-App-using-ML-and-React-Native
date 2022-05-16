@@ -9,15 +9,17 @@ import {
   Image,
   ActivityIndicator,
   ImageBackground,
-  Modal
+  Modal,
 } from "react-native";
 import { Card } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
+import { useIncrement, useSetIncrement } from "../Context/PeopleContext";
 import axios from "axios";
 import DeleteModal from "../Components/Modal/DeleteModal";
+import PlotList from "../Components/PlotListComponent";
 
-const customData = require("../data.json")
+const customData = require("../data.json");
 
 function OpenScreen() {
   const navigation = useNavigation();
@@ -26,14 +28,19 @@ function OpenScreen() {
   const [imageData, setImageData] = useState(null);
   const [personData, setPersonData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showImage, setShowImage] = useState(true);
+  const [plotData, setPlotData] = useState([1, 2, 3, 4, 5]);
 
-  const IP = customData["IP"]
+  const increment = useIncrement();
+  const setIncrement = useSetIncrement();
 
-  getImage = async (pdata) => {
+  const IP = customData["IP"];
+
+  const getImage = async (pdata) => {
     setPersonData(pdata);
     const name = pdata[0];
 
-    const href= [IP + "openImage"]
+    const href = [IP + "openimage"];
 
     let response = await axios
       .post("http://172.21.12.205:5000/openimage", { name })
@@ -44,7 +51,6 @@ function OpenScreen() {
         setImageData(res.data);
       });
     // return response.data
-    
   };
 
   useEffect(() => {
@@ -53,14 +59,15 @@ function OpenScreen() {
 
   const deletePressed = async () => {
     const name = personData[0];
-    const href= [IP + "delete"]
+    const href = [IP + "delete"];
 
     let response = await axios
       .post(`${href}`, { name })
       // let response =await  axios.post('https://dep-ecg.herokuapp.com/openimage', { name })
       .then((res) => {});
 
-    navigation.navigate("Home")
+    setIncrement(!increment);
+    navigation.navigate("Home");
   };
 
   const changeModalVisible = (bool) => {
@@ -69,29 +76,41 @@ function OpenScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-        <Modal
+      <Modal
         transparent={true}
         animationType="fade"
         visible={isModalVisible}
         nRequestClose={() => changeModalVisible(false)}
       >
-      <DeleteModal changeModalVisible={changeModalVisible} deletePressed={deletePressed} />
-    </Modal>
+        <DeleteModal
+          changeModalVisible={changeModalVisible}
+          deletePressed={deletePressed}
+        />
+      </Modal>
       {imageData === null ? (
         <ActivityIndicator size={50} color="#0000ff" />
       ) : (
-        <View>
+        <View style={{flex:1, justifyContent:"center"}}>
           <View style={styles.nameText}>
             <Text style={styles.actualText}>Name: {personData[0]}</Text>
             <Text style={styles.actualText}>Date Added: {personData[1]}</Text>
           </View>
-          <View style={styles.imageWrapper}>
-            {/* <View style={styles.content}> */}
-            <ImageBackground
-              style={styles.theImage}
-              source={{ uri: "data:image/jpeg;base64," + imageData }}
-            />
-          </View>
+
+          {showImage ? (
+            <View style={{flex:0.6}}>
+              <PlotList data={plotData} />
+            </View>
+          ) : (
+            // null
+            <View style={styles.imageWrapper}>
+              {/* <View style={styles.content}> */}
+              <ImageBackground
+                style={styles.theImage}
+                source={{ uri: "data:image/jpeg;base64," + imageData }}
+              />
+            </View>
+          )}
+
           <View style={styles.nameText2}>
             <Text style={styles.actualText2}>Result: {personData[2]}</Text>
           </View>
@@ -105,7 +124,10 @@ function OpenScreen() {
         >
           <Text>GO BACK</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button2} onPress={()=>changeModalVisible(true)}>
+        <TouchableOpacity
+          style={styles.button2}
+          onPress={() => changeModalVisible(true)}
+        >
           <Text>DELETE</Text>
         </TouchableOpacity>
       </View>
@@ -134,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     left: 30,
-    bottom: 10,
+    bottom: 1,
   },
   button2: {
     // backgroundColor:"#FB3E00",
@@ -144,10 +166,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     right: 30,
-    bottom: 10,
+    bottom: 1,
   },
 
   image: {
+    flex: 1,
     width: 500,
     height: 500,
     resizeMode: "contain",
@@ -179,23 +202,31 @@ const styles = StyleSheet.create({
   },
   nameText: {
     alignSelf: "center",
-    marginBottom: 50,
     borderRadius: 15,
     borderWidth: 5,
     borderBottomColor: "#42c0fb",
-    borderLeftColor:"transparent",
-    borderTopColor:"#42c0fb",
-    borderRightColor:"transparent"
+    borderLeftColor: "transparent",
+    borderTopColor: "#42c0fb",
+    borderRightColor: "transparent",
+    flex:0.09,
+    marginBottom:20
+    // position:"absolute",
+    // top:50
+ 
+    // marginTop:50
   },
   nameText2: {
     alignSelf: "center",
-    marginTop: 30,
     borderRadius: 15,
     borderWidth: 5,
     borderBottomColor: "#42c0fb",
-    borderLeftColor:"transparent",
-    borderTopColor:"#42c0fb",
-    borderRightColor:"transparent"
+    borderLeftColor: "transparent",
+    borderTopColor: "#42c0fb",
+    borderRightColor: "transparent",
+    // position:"absolute",
+    // bottom: 130
+    flex:0.07,
+    marginBottom:50,
   },
   content: {
     position: "absolute",
@@ -207,7 +238,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   imageWrapper: {
-    height: 300,
+    height: 100,
     width: 500,
     overflow: "hidden",
   },
@@ -220,9 +251,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#42c0fb",
     fontWeight: "bold",
-    padding: 10,
+    padding: 5,
   },
-  actualText2: { fontSize: 40, color: "#42c0fb", padding: 10, },
+  actualText2: { fontSize: 40, color: "#42c0fb" },
 });
 
 export default OpenScreen;

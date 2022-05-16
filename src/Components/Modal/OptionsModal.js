@@ -19,6 +19,23 @@ const OptionsModal = ({ changeModalVisible, setSortBy }) => {
     changeModalVisible(false)
   }
 
+  const setDateafunc=()=>{
+    setSortBy("Datea")
+    changeModalVisible(false)
+  }
+  const setDatedfunc=()=>{
+    setSortBy("Dated")
+    changeModalVisible(false)
+  }
+  const setIfunc=()=>{
+    setSortBy("Ischemic")
+    changeModalVisible(false)
+  }
+  const setNIfunc=()=>{
+    setSortBy("NIschemic")
+    changeModalVisible(false)
+  }
+
   return (
     <View style={styles.container}>
       {sortVisible === true ? (
@@ -40,16 +57,16 @@ const OptionsModal = ({ changeModalVisible, setSortBy }) => {
           <TouchableOpacity style={styles.button} onPress={setNamefunc}>
             <Text style={{ color: "white", alignSelf: "center" }}>Name</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={()=>setFunc}>
-            <Text style={{ color: "white" }}>Date (Ascending)</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={()=>setFunc}>
+          <TouchableOpacity style={styles.button} onPress={setDateafunc}>
             <Text style={{ color: "white" }}>Date (Descending)</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={()=>setFunc}>
+          <TouchableOpacity style={styles.button} onPress={setDatedfunc}>
+            <Text style={{ color: "white" }}>Date (Ascending)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={setIfunc}>
             <Text style={{ color: "white" }}>Ischemic</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={()=>setFunc}>
+          <TouchableOpacity style={styles.button} onPress={setNIfunc}>
             <Text style={{ color: "white" }}>Non-Ischemic</Text>
           </TouchableOpacity>
         </View>

@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import * as Animatable from 'react-native-animatable'
+import axios from "axios";
+import { useSetAuth } from "../Context/AuthContext";
+
+const customData= require("../data.json")
 
 export default function Signup({navigation}) {
   const [data, setData] = useState({
@@ -41,6 +45,34 @@ export default function Signup({navigation}) {
            secureTextEntry:!data.secureTextEntry
        })
   }
+
+  const setAuth= useSetAuth()
+
+  const signupnow = async () => {
+
+    const IP=customData["IP"]
+    const href = [IP + "signup"]
+
+    let response = await axios
+      .post(`${href}`, { data })
+      // .post("https://dep-ecg.herokuapp.com/signin", { data })
+      .then((res) => {
+        // if (res.data == "NO")V {
+        //   setShowActBar(false);
+        //   setIsModalVisible(true);
+        // } else {
+        //   navigation.navigate("OTP", {
+        //     otp: res.data["otp"],
+        //   });
+        //   setShowActBar(false);
+          setAuth(res.data["name"])
+          navigation.navigate("OTP", {
+            otp: res.data["otp"],
+          });
+        
+      });
+    // return response.data
+  };
 
   return (
     <View style={styles.container}>
@@ -84,7 +116,7 @@ export default function Signup({navigation}) {
 
 
         <View style={styles.button}>
-            <TouchableOpacity onPress={()=>navigation.navigate("Signup")}
+            <TouchableOpacity onPress={signupnow}
                 style={[styles.signIn,{backgroundColor:"#42c0fb"}]}
             >
                 <Text style={[styles.textSign,{color:"white"}]}>Sign Up</Text>

@@ -21,9 +21,8 @@ export default function CameraScreen({navigation}) {
     if(camera){
       const data= await camera.takePictureAsync({base64:true});
       setCapturedImage(data.uri);
-      // let sendURI= await uriToBase64(data.uri)
-      // console.log(data.type)
-      navigation.navigate('ImageScreen', {
+
+      navigation.navigate('Image', {
         imageData: data,
           });
       

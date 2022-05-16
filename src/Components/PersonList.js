@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList } from 'react-native';
 import HomeComponent from './HomeComponent';
-import {usePeople, useSetPeopleContext, useNameDateData} from '../Context/PeopleContext'
+import {useNameDateData} from '../Context/PeopleContext'
 // import Wallet from './CardComponent/CardList';
-import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 
 export default function PersonList({sortBy}){
@@ -23,11 +22,20 @@ export default function PersonList({sortBy}){
                       });
     }
 
-    function compare( a, b ) {
+    function compareName( a, b ) {
         if ( a[0] < b[0] ){
           return -1;
         }
         if ( a[0] > b[0] ){
+          return 1;
+        }
+        return 0;
+    }
+    function compareIschemic( a, b ) {
+        if ( a[2] < b[2] ){
+          return -1;
+        }
+        if ( a[2] > b[2] ){
           return 1;
         }
         return 0;
@@ -38,10 +46,34 @@ export default function PersonList({sortBy}){
         // setIsLoading(true)
         if(sortBy==="Name"){
 
-            people.sort(compare)
+            people.sort(compareName)
             setChanged(!changed)
         }
-        console.log(people)
+        else if(sortBy==="Datea"){
+            people.sort(function(a,b){
+                // Turn your strings into dates, and then subtract them
+                // to get a value that is either negative, positive, or zero.
+                return new Date(b[1]) - new Date(a[1]);
+              });
+              setChanged(!changed)
+        }
+        else if(sortBy==="Dated"){
+            people.sort(function(a,b){
+                // Turn your strings into dates, and then subtract them
+                // to get a value that is either negative, positive, or zero.
+                return new Date(a[1]) - new Date(b[1]);
+              });
+              setChanged(!changed)
+        }
+        else if(sortBy==="Ischemic"){
+            people.sort(compareIschemic)
+              setChanged(!changed)
+        }
+        else if(sortBy==="NIschemic"){
+            people.sort(compareIschemic)
+              setChanged(!changed)
+        }
+        // console.log(people)
         // setIsLoading(false)
     },[sortBy])
 

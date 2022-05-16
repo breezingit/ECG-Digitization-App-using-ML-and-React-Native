@@ -164,21 +164,27 @@ export class App extends Component {
       // this.props.navigation.navigate("Results",{
       //   image:result
       // });
-      await toServer({
+      // await toServer({
+      //   type: result.type,
+      //   base64: result.base64,
+      //   uri: result.uri,
+      // });
+
+      this.props.navigation.navigate("Results", {
         type: result.type,
         base64: result.base64,
         uri: result.uri,
       });
-    } else {
-      let base64 = await this.uriToBase64(result.uri);
-      await toServer({
-        type: result.type,
-        base64: base64,
-        uri: result.uri,
-      });
-    }
 
-    this.props.navigation.navigate("Results");
+    } else {
+      // let base64 = await this.uriToBase64(result.uri);
+      // await toServer({
+      //   type: result.type,
+      //   base64: base64,
+      //   uri: result.uri,
+      // });
+      
+    }
   };
 
   changePatientModalVisible = () => {

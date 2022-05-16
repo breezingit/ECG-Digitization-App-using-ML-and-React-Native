@@ -18,18 +18,17 @@ import {
   useSetPeopleContext,
   useNameDateData,
   useSetNameDateData,
-  useIncrement
+  useIncrement,
 } from "../Context/PeopleContext";
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
 import OptionsModal from "./Modal/OptionsModal";
-import AddPatientModal from "./Modal/AddPatientModal";
+import { useAuth } from "../Context/AuthContext";
 
-const customData= require('../data.json')
+const customData = require("../data.json");
 
 export default function SearchArea({ navigation }) {
-  
-  const IP = customData["IP"]
+  const IP = customData["IP"];
 
   const [dataLength, setDataLength] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,9 +37,8 @@ export default function SearchArea({ navigation }) {
   const people = usePeople();
   const setPeople = useSetPeopleContext();
   const setNameDateData = useSetNameDateData();
-  const increment=useIncrement();
+  const increment = useIncrement();
   const isFocused = useIsFocused();
-
 
   const generateKey = (pre) => {
     return `${pre}_${new Date().getTime()}`;
@@ -49,52 +47,31 @@ export default function SearchArea({ navigation }) {
   function myFunction(value, index, array) {
     return value[0];
   }
+  const userName = useAuth();
 
   const getData = async () => {
-
     setIsLoading(true);
 
-    const href= ["" + IP + "getdata"]
-    let response = await axios.get(`${href}`);
+    const href = ["" + IP + "getdata"];
+    let response = await axios.post(`${href}`, { userName });
     const result = Object.values(response.data);
-    // console.log(response.data)
-    const resultFinal = result.map(myFunction);
 
+    const resultFinal = result.map(myFunction);
+    console.log(resultFinal);
     setPeople(resultFinal);
     setDataLength(result.length);
     setNameDateData(result);
 
-    setIsLoading(false)
-
+    setIsLoading(false);
   };
 
-
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     setIsLoading(true);
-  //     getData();
-
-  //     setTimeout(() => {
-  //       setIsLoading(false);
-  //     }, 5000);
-  //   }
-  // }, [isFocused]);
-
-  useEffect(()=>{
-    
-    // setIsLoading(true);
-
-    getData()
-
-    // setIsLoading(false)
-
-  }, [increment])
-
+  useEffect(() => {
+    getData();
+  }, [increment]);
 
   const changeModalVisible = (bool) => {
     setIsModalVisible(bool);
   };
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -104,7 +81,10 @@ export default function SearchArea({ navigation }) {
         visible={isModalVisible}
         nRequestClose={() => changeModalVisible(false)}
       >
-        <OptionsModal changeModalVisible={changeModalVisible} setSortBy={setSortBy} />
+        <OptionsModal
+          changeModalVisible={changeModalVisible}
+          setSortBy={setSortBy}
+        />
       </Modal>
 
       <View style={styles.topBar}>
@@ -127,7 +107,10 @@ export default function SearchArea({ navigation }) {
           style={{ paddingHorizontal: 15 }}
           onPress={() => changeModalVisible(true)}
         >
-          <Icon name="sun" size={20} />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontSize: 20, marginRight: 3 }}>SortBy</Text>
+            <Icon name="sun" size={15} />
+          </View>
         </TouchableOpacity>
       </View>
       {isLoading === true ? (
@@ -142,7 +125,7 @@ export default function SearchArea({ navigation }) {
           <Text style={{ fontSize: 30, paddingTop: 10 }}> Add ECG</Text>
         </View>
       ) : (
-        <PersonList sortBy= {sortBy} />
+        <PersonList sortBy={sortBy} />
       )}
     </View>
   );

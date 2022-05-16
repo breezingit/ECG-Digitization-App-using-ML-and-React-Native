@@ -9,7 +9,8 @@ import cv2
 import psycopg2
 import json
 from otp import *
-from test6 import getScanned
+from test7 import getScanned
+import json
 app = Flask(__name__)
 
 @app.route("/image", methods=['GET', 'POST'])
@@ -46,20 +47,55 @@ def final():
         imageData=data[0]
         
     
-    image=getScanned(imageData)
-    image.save("gottem.jpg")
-    buffered = BytesIO()
-    image.save(buffered, format="JPEG")
-    img_str = base64.b64encode(buffered.getvalue())
+    imageList=getScanned(imageData)
+
+    imageStrData=[]
+    for image in imageList:
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+        img_str = base64.b64encode(buffered.getvalue())
+        # img_str.decode("utf-8")
+        imageStrData.append(img_str.decode())
+
     
+    for img_str in imageStrData:
+        query = """INSERT INTO JImage(Name,biodata) VALUES(%s,%s);"""
+        val=("Name",img_str)
+        cur.execute(query,val)
     
-    query = """INSERT INTO JImage(Name,biodata) VALUES(%s,%s);"""
-    val=("Name",img_str)
-    cur.execute(query,val)
+    imgdict={}
+    count=0
+    for img in imageStrData:
+        imgdict[count]=img
+        count+=1
+    
     conn.commit()
     conn.close()
-    
-    return img_str
+    return imgdict
+    # return "DONE"
+
+# @app.route("/ok", methods=["POST"])
+# def ok():
+
+#     data=request.get_json()
+#     # print(data)
+#     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
+#                         password = "dep:1234", host = "dep.postgres.database.azure.com")
+        
+#     cur = conn.cursor()
+
+#     query="SELECT biodata from JImage ORDER BY ID DESC LIMIT 1 OFFSET " + str(data["count"])
+
+#     cur.execute(query)
+#     rows = cur.fetchall()
+
+#     img_str=""
+#     for data in rows:
+#         img_str=data[0]
+#         break
+
+#     return img_str.tobytes()
+
 
 @app.route("/savename",methods=["POST"])
 def savename():
@@ -72,7 +108,7 @@ def savename():
                         password = "dep:1234", host = "dep.postgres.database.azure.com")
         
     cur = conn.cursor()
-    query="""SELECT biodata FROM JImage ORDER BY ID DESC LIMIT 1;"""
+    query="""SELECT biodata FROM JImage ORDER BY ID DESC LIMIT 12;"""
     cur.execute(query)
     rows = cur.fetchall()
     
@@ -80,21 +116,28 @@ def savename():
     for data in rows:
         imageData=data[0]
         
-    query = """INSERT INTO Images(Name,biodata, Date) VALUES(%s,%s, CURRENT_DATE);"""
-    val=(res["searchPhrase"], imageData)
-    cur.execute(query,val)
+        query = """INSERT INTO Images(Name,biodata, Date) VALUES(%s,%s, CURRENT_DATE);"""
+        val=(res["searchPhrase"], imageData)
+        cur.execute(query,val)
     conn.commit()
     conn.close()
     
     return "Name Inserted"
 
-@app.route("/getdata", methods=["GET"])
+@app.route("/getdata", methods=["POST"])
 def getData():
+
+    data =request.get_json()
+
     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
                         password = "dep:1234", host = "dep.postgres.database.azure.com")
         
     cur = conn.cursor()
-    query="""SELECT Name, Date, Result FROM Images;"""
+
+    personName="yashpriyadarshi465@gmail.com"
+    
+    query="""SELECT Name, Date, Result FROM Images WHERE person = '{}';""".format(personName)
+
     cur.execute(query)
     rows = cur.fetchall()
     
@@ -191,6 +234,28 @@ def delete():
     
     return "Name Deleted"
 
+@app.route("/signup", methods=["POST"])
+def signup():
+    
+    data= request.get_json()
+    
+    conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
+                        password = "dep:1234", host = "dep.postgres.database.azure.com")
+        
+    cur = conn.cursor()
+    query= """INSERT INTO USERS(Name, Email) VALUES(%s,%s);"""
+    val=(data["data"]["password"],data["data"]["email"])
+    cur.execute(query,val)
+    conn.commit()
+    conn.close()
+    
+    
+    otp=generateOTP()
+    sendOTP(data["data"]["email"], otp)
+    dict={"otp": otp, "name": data["data"]["password"]}
+    return dict
+
+
 # @app.route("/cancelimage", methods="POST")
 # def cancelimage():
 #     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
@@ -205,8 +270,8 @@ def delete():
 if __name__ == '__main__':
       app.run(host='172.21.12.205',port='5000')
 
-# psql -h dep.postgres.database.azure.com -d postgres -U yashpriyadarshi (pass: dep:1234)
-
+# + (pass: dep:1234)
+# psql -h dep.postgres.database.azure.com -d postgres -U yashpriyadarshi
 # CREATE TABLE JImage(
 #     ID SERIAL PRIMARY KEY,
 #     NAME TEXT,
@@ -221,6 +286,7 @@ if __name__ == '__main__':
 # INSERT INTO USERS(Name, Email) VALUES('Yash','yashpriyadarshi465@gmail.com');
 # biodata bytea
 # ALTER TABLE Images 
+# ADD COLUMN person TEXT DEFAULT 'yashpriyadarshi465@gmail.com';
 # ADD COLUMN Date DATE DEFAULT CURRENT_TIMESTAMP,
 # ADD COLUMN Result TEXT DEFAULT 'ISCHEMIC';
 

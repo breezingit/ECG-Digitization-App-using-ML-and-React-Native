@@ -16,111 +16,204 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import LottieView from 'lottie-react-native'
 import axios from "axios";
 import SimpleModal from "../Components/Modal/SimpleModal";
-// import { useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import toServer from "../Components/toServer";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { useIncrement, useSetIncrement } from "../Context/PeopleContext";
+import PlotList from "../Components/PlotListComponent";
+const customData = require("../data.json");
 
-const customData=require("../data.json")
+export default function Results({ navigation }) {
+  const [imageData, setImageData] = useState(null);
+  const [disableButton, setDisableButton] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [personName, setPersonName] = useState("");
+  const increment = useIncrement();
+  const setIncrement = useSetIncrement();
+  const route = useRoute();
+  const [showImage, setShowImage] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [imageName, setImageName] = useState("Lead1");
+  const arr = [
+    "Lead1",
+    "Lead2",
+    "Lead3",
+    "LeadV1",
+    "LeadV2",
+    "LeadV3",
+    "LeadV4",
+    "LeadV5",
+    "LeadV6",
+    "LeadAVL",
+    "LeadAVR",
+    "LeadAVF",
+  ];
 
-
-export default function Results({navigation}){
-
-  const [imageData, setImageData] =useState(null)
-  const [disableButton, setDisableButton] =useState(false)
-  const [isModalVisible, setIsModalVisible] =useState(false)
-  const [personName, setPersonName] =useState("")
-  const increment=useIncrement()
-  const setIncrement= useSetIncrement()
-
-  useEffect(()=>{
-
-      getImage()
-
-  },[])
+  useEffect(() => {
+    getImage();
+    // console.log(imageData)
+  }, []);
 
   const getImage = async () => {
+    await toServer({
+      type: route.params.type,
+      base64: route.params.base64,
+      uri: route.params.uri,
+    });
 
-    const IP = customData["IP"]
-    const href= [IP + "final"]
+    const IP = customData["IP"];
+    const href = [IP + "final"];
+
     let response = await axios.get(`${href}`);
-    // let response = await axios.get("https://dep-ecg.herokuapp.com/final");
+    console.log(response);
+    setImageData(response.data);
     // console.log(response.data)
-
-    // return response.data;
-    setImageData(response.data)
-    setDisableButton(true)
+    // setImageData(response.data)
+    setDisableButton(true);
   };
 
+  //  const getDict = async() =>{
+  //   const IP = customData["IP"]
+  //   const href= [IP + "ok"]
 
+  //   var finalDict=[]
+  //   for(var i=0;i<12;i+=1){
+  //     var count=i+1
+  //     let response = await axios.post(`${href}`, {count});
+  //     finalDict=[...finalDict, response.data]
+  //   }
 
+  //   setImageData(finalDict)
+  //   console.log(imageData)
+  //   setDisableButton(true)
+  //  }
 
   const saveImage = async (searchPhrase) => {
-    const IP = customData["IP"]
-    const href= [IP + "savename"]
 
+    if(imageData===null){
+      return
+    }
+
+    const IP = customData["IP"];
+    const href = [IP + "savename"];
 
     let response = await axios
       .post(`${href}`, { searchPhrase })
       // .post("https://dep-ecg.herokuapp.com/savename", { searchPhrase })
-      .then((res) => {
-        // console.log(res.data);
-      });
-    // console.log(response.data)
-    // return response.data
-    setIncrement(!increment)
+      .then((res) => {});
+
+    setIncrement(!increment);
     navigation.navigate("Home");
   };
 
   const changeModalVisible = (bool) => {
-    setIsModalVisible(bool)
+    setIsModalVisible(bool);
   };
 
-    return (
-      <SafeAreaView style={styles.container}>
-        {/* <BlurView intensity={90} tint="dark" style={styles.blurContainer}> */}
+  const nextImage = () => {
+    if (imageIndex === 11) {
+      return;
+    } else {
+      setImageIndex(imageIndex + 1);
+      setImageName(arr[imageIndex])
+    }
+  };
 
-        <Modal
-          transparent={true}
-          animationType="fade"
-          visible={isModalVisible}
-          nRequestClose={() => changeModalVisible(false)}
-        >
-          <SimpleModal
-            saveImage={saveImage}
-            changeModalVisible={changeModalVisible}
-          />
-        </Modal>
+  const previousImage = () => {
+    if (imageIndex === 0) {
+      return;
+    } else {
+      setImageIndex(imageIndex - 1);
+      setImageName(arr[imageIndex])
+    }
+  };
 
-        {disableButton === false ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
-          <View style={{justifyContent:"center", alignContent:"center"}}>
-            <Image
-              source={{ uri: "data:image/jpeg;base64," + imageData }}
-              style={styles.image}
-            />
+  return (
+    <SafeAreaView style={styles.container}>
+      <Modal
+        transparent={true}
+        animationType="fade"
+        visible={isModalVisible}
+        nRequestClose={() => changeModalVisible(false)}
+      >
+        <SimpleModal
+          saveImage={saveImage}
+          changeModalVisible={changeModalVisible}
+        />
+      </Modal>
 
-            <View style={styles.buttons}>
-              <TouchableOpacity
-                onPress={async () => navigation.navigate("Home")}
-                style={styles.button1}
-              >
-                <Text>CANCEL</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={async () => changeModalVisible(true)}
-                style={styles.button2}
-              >
-                <Text>Save ECG</Text>
-              </TouchableOpacity>
-            </View>
+      {disableButton === false ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : showImage === false ? (
+        <View style={{ flex: 1 }}>
+          <View style={styles.nameText}>
+            <Text style={styles.actualText}>ECG DIGITIZED!</Text>
           </View>
-        )}
-        {/* </BlurView> */}
-      </SafeAreaView>
-    );
-  }
+          <View style={{ flex: 0.65, paddingBottom: 10, alignSelf: "stretch" }}>
+            <PlotList
+              data={arr}
+              setShowImage={setShowImage}
+              setImageIndex={setImageIndex}
+            />
+          </View>
 
+          <View style={styles.nameText2}>
+            <Text style={styles.actualText2}>Result: ISCHEMIC</Text>
+          </View>
+        </View>
+      ) : (
+        // null
+        <View style={{flex:0.9}}>
+          <View style={styles.nameText}>
+            <Text style={styles.actualText}>{arr[imageIndex]}</Text>
+          </View>
+          <Image
+            source={{ uri: "data:image/jpeg;base64," + imageData[imageIndex] }}
+            style={styles.image}
+          />
+          <View
+            style={{
+              position: "absolute",
+              flexDirection: "row",
+              alignItems: "flex-end",
+              bottom: 150,
+            }}
+          >
+            <TouchableOpacity
+              onPress={previousImage}
+              style={{ position: "absolute", left: 70 }}
+            >
+              <Icon name="arrow-circle-left" color="#42c0fb" size={70} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={nextImage}
+              style={{ position: "absolute", left: 360 }}
+            >
+              <Icon name="arrow-circle-right" color="#42c0fb" size={70} />
+            </TouchableOpacity>
+          </View>
+          {/* <TouchableOpacity onPress={previousImage}>
+            <Icon name="sun" backgroundColor="blue" size={50} />
+          </TouchableOpacity> */}
+        </View>
+      )}
+      <View style={styles.buttons}>
+        <TouchableOpacity
+          onPress={async () => navigation.navigate("Home")}
+          style={styles.button1}
+        >
+          <Text>CANCEL</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={async () => changeModalVisible(true)}
+          style={styles.button2}
+        >
+          <Text>Save ECG</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -133,28 +226,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: 50,
-    left : 150
   },
   button1: {
-    // backgroundColor:"#FB3E00",
     backgroundColor: "#42c0fb",
     padding: 15,
     borderRadius: 20,
-    marginHorizontal: 20
-    // alignItems: "center",
-    // position: "absolute",
-    // left: 30,
-    // bottom: 10,
+    alignItems: "center",
+    position: "absolute",
+    left: 30,
+    bottom: 1,
   },
   button2: {
-    // backgroundColor:"#FB3E00",
     backgroundColor: "#42c0fb",
     padding: 15,
     borderRadius: 20,
-    // alignItems: "center",
-    // position: "absolute",
-    // right: 30,
-    // bottom: 10,
+    alignItems: "center",
+    position: "absolute",
+    right: 30,
+    bottom: 1,
   },
 
   image: {
@@ -187,5 +276,37 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
+  },
+  actualText: {
+    fontSize: 50,
+    color: "#42c0fb",
+    fontWeight: "bold",
+    padding: 5,
+  },
+  actualText2: { fontSize: 40, color: "#42c0fb", padding: 10 },
+  nameText: {
+    alignSelf: "center",
+    borderRadius: 15,
+    borderWidth: 5,
+    borderBottomColor: "#42c0fb",
+    borderLeftColor: "transparent",
+    borderTopColor: "#42c0fb",
+    borderRightColor: "transparent",
+    flex: 0.09,
+    marginBottom: 20,
+    // position:"absolute",
+    // top:50
+
+    // marginTop:50
+  },
+  nameText2: {
+    alignSelf: "center",
+    borderRadius: 15,
+    borderWidth: 5,
+    borderBottomColor: "#42c0fb",
+    borderLeftColor: "transparent",
+    borderTopColor: "#42c0fb",
+    borderRightColor: "transparent",
+    flex: 0.09,
   },
 });

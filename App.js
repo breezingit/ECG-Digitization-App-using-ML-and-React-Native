@@ -4,7 +4,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Camera from "./src/Camera/CameraScreen";
-import ImageScreen from "./src/Camera/ImageScreen";
 import Home from "./src/Screens/Home";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { themes } from "./src/Components/Themes/themes";
@@ -55,14 +54,6 @@ export default function App() {
         <Stack.Screen
           name="Camera"
           component={Camera}
-          // options={{
-          //   drawerItemStyle: { height: 0 },
-          // }}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ImageScreen"
-          component={ImageScreen}
           // options={{
           //   drawerItemStyle: { height: 0 },
           // }}

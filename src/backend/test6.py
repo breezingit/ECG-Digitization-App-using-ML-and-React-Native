@@ -377,7 +377,8 @@ def getScanned(imageData):
 
     # ax[0].imshow(img5,cmap='gray')
     # ax[1].imshow(opening,cmap='gray')
-    return envelop(opening)
+    print(envelop(opening))
+    # return envelop(opening)
 # return envelop(opening)
 
 
