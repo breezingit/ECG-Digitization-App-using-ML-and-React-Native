@@ -1,6 +1,7 @@
 import React from "react";
 import {Image, View, Text, StyleSheet, TextInput , Dimensions, TouchableOpacity} from "react-native";
 
+const colorData=require("../colors.json")
 export default function LoginScreen({navigation}){
     return(
         <View style={styles.container}>
@@ -31,7 +32,7 @@ const height_logo= height*0.28
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#42c0fb'
+      backgroundColor: 'white'
     },
     header: {
         flex: 2,
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     },
     footer: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colorData["primary"],
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingVertical: 50,
@@ -51,12 +52,12 @@ const styles = StyleSheet.create({
         height: height_logo
     },
     title: {
-        color: '#05375a',
+        color: 'white',
         fontSize: 30,
         fontWeight: 'bold'
     },
     text: {
-        color: 'grey',
+        color: 'white',
         marginTop:5
     },
     button: {
@@ -70,10 +71,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 50,
         flexDirection: 'row',
-        backgroundColor:"#42c0fb"
+        backgroundColor:"white"
     },
     textSign: {
-        color: 'white',
+        color: '#0077b6',
         fontWeight: 'bold'
     }
   });

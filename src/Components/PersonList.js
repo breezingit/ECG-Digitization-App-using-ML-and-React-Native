@@ -16,7 +16,6 @@ export default function PersonList({sortBy}){
     }
 
     openPressed= (name)=>{
-
         navigation.navigate("Image", {
                         pname: name,
                       });
@@ -73,7 +72,6 @@ export default function PersonList({sortBy}){
             people.sort(compareIschemic)
               setChanged(!changed)
         }
-        // console.log(people)
         // setIsLoading(false)
     },[sortBy])
 

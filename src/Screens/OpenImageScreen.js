@@ -11,7 +11,7 @@ import {
   ImageBackground,
   Modal,
 } from "react-native";
-import { Card } from "react-native-paper";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import { useIncrement, useSetIncrement } from "../Context/PeopleContext";
@@ -28,8 +28,9 @@ function OpenScreen() {
   const [imageData, setImageData] = useState(null);
   const [personData, setPersonData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [showImage, setShowImage] = useState(true);
-  const [plotData, setPlotData] = useState([1, 2, 3, 4, 5]);
+  const [showImage, setShowImage] = useState(false);
+  const [plotData, setPlotData] = useState(customData["arr"]);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const increment = useIncrement();
   const setIncrement = useSetIncrement();
@@ -37,18 +38,19 @@ function OpenScreen() {
   const IP = customData["IP"];
 
   const getImage = async (pdata) => {
+    console.log(pdata)
     setPersonData(pdata);
     const name = pdata[0];
-
     const href = [IP + "openimage"];
 
     let response = await axios
-      .post("http://172.21.12.205:5000/openimage", { name })
-      // .post(`${href}`, { name })
+    .post(`${href}`, { name })
+      // .post("http://172.21.12.205:5000/openimage", { name })
       // let response =await  axios.post('https://dep-ecg.herokuapp.com/openimage', { name })
       .then((res) => {
-        // console.log(res.data)
-        setImageData(res.data);
+        const tempData = Object.values(res.data);
+        tempData.reverse()
+        setImageData(tempData)
       });
     // return response.data
   };
@@ -74,6 +76,24 @@ function OpenScreen() {
     setIsModalVisible(bool);
   };
 
+  const nextImage = () => {
+    if (imageIndex === 11) {
+      return;
+    } else {
+      setImageIndex(imageIndex + 1);
+
+    }
+  };
+
+  const previousImage = () => {
+    if (imageIndex === 0) {
+      return;
+    } else {
+      setImageIndex(imageIndex - 1);
+      
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Modal
@@ -89,33 +109,63 @@ function OpenScreen() {
       </Modal>
       {imageData === null ? (
         <ActivityIndicator size={50} color="#0000ff" />
-      ) : (
-        <View style={{flex:1, justifyContent:"center"}}>
-          <View style={styles.nameText}>
-            <Text style={styles.actualText}>Name: {personData[0]}</Text>
-            <Text style={styles.actualText}>Date Added: {personData[1]}</Text>
+      ) : showImage === false ?
+             (
+              <View
+                style={{ flex: 1, justifyContent: "center", alignSelf: "stretch" }}
+              >
+                <View style={styles.nameText}>
+                  <Text style={styles.actualText}>Name: {personData[0]}</Text>
+                  <Text style={styles.actualText}>Date Added: {personData[1]}</Text>
+                </View>
+                  <View style={{ flex: 0.6 }}>
+                    <PlotList
+                      data={plotData}
+                      setShowImage={setShowImage}
+                      setImageIndex={setImageIndex}
+                    />
+                  </View>
+                  <View style={styles.nameText2}>
+                    <Text style={styles.actualText2}>Result: {personData[2]}</Text>
+                  </View>
+              </View>
+          ) 
+          :
+          (
+            <View style={{flex:0.9}}>
+          {/* <View style={styles.nameText}>
+            <Text style={styles.actualText}>{arr[imageIndex]}</Text>
+          </View> */}
+          <Image
+            source={{ uri: "data:image/jpeg;base64," + imageData[imageIndex] }}
+            style={styles.image}
+          />
+          <View
+            style={{
+              position: "absolute",
+              flexDirection: "row",
+              alignItems: "flex-end",
+              bottom: 130,
+            }}
+          >
+            <TouchableOpacity
+              onPress={previousImage}
+              style={{ position: "absolute", left: 70 }}
+            >
+              <Icon name="arrow-circle-left" color="#42c0fb" size={70} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={nextImage}
+              style={{ position: "absolute", left: 360 }}
+            >
+              <Icon name="arrow-circle-right" color="#42c0fb" size={70} />
+            </TouchableOpacity>
           </View>
-
-          {showImage ? (
-            <View style={{flex:0.6}}>
-              <PlotList data={plotData} />
-            </View>
-          ) : (
-            // null
-            <View style={styles.imageWrapper}>
-              {/* <View style={styles.content}> */}
-              <ImageBackground
-                style={styles.theImage}
-                source={{ uri: "data:image/jpeg;base64," + imageData }}
-              />
-            </View>
-          )}
-
-          <View style={styles.nameText2}>
-            <Text style={styles.actualText2}>Result: {personData[2]}</Text>
-          </View>
+          {/* <TouchableOpacity onPress={previousImage}>
+            <Icon name="sun" backgroundColor="blue" size={50} />
+          </TouchableOpacity> */}
         </View>
-      )}
+          )} 
 
       <View style={styles.buttons}>
         <TouchableOpacity
@@ -152,7 +202,7 @@ const styles = StyleSheet.create({
     // backgroundColor:"#FB3E00",
     backgroundColor: "#42c0fb",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: "center",
     position: "absolute",
     left: 30,
@@ -162,7 +212,7 @@ const styles = StyleSheet.create({
     // backgroundColor:"#FB3E00",
     backgroundColor: "#42c0fb",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: "center",
     position: "absolute",
     right: 30,
@@ -208,11 +258,11 @@ const styles = StyleSheet.create({
     borderLeftColor: "transparent",
     borderTopColor: "#42c0fb",
     borderRightColor: "transparent",
-    flex:0.09,
-    marginBottom:20
+    flex: 0.09,
+    marginBottom: 20,
     // position:"absolute",
     // top:50
- 
+
     // marginTop:50
   },
   nameText2: {
@@ -225,8 +275,8 @@ const styles = StyleSheet.create({
     borderRightColor: "transparent",
     // position:"absolute",
     // bottom: 130
-    flex:0.07,
-    marginBottom:50,
+    flex: 0.07,
+    marginBottom: 50,
   },
   content: {
     position: "absolute",

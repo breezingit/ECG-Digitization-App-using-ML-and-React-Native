@@ -15,9 +15,11 @@ import {
 import * as Animatable from "react-native-animatable";
 import axios from "axios";
 import ErrorModal from "../Components/Modal/ErrorModal";
-import { useSetAuth } from "../Context/AuthContext";
+import { useSetAuth, useSetEmail } from "../Context/AuthContext";
+import { color } from "react-native-reanimated";
 
-const customData = require("../data.json")
+const colorData=require("../colors.json")
+const customData = require("../data.json");
 
 export default function Signin({ navigation }) {
   const [data, setData] = useState({
@@ -64,12 +66,12 @@ export default function Signin({ navigation }) {
     setIsModalVisible(bool);
   };
 
-  const setAuth= useSetAuth()
+  const setAuth = useSetAuth();
+  const setEmail = useSetEmail();
 
   const signinnow = async () => {
-
-    const IP=customData["IP"]
-    const href = [IP + "signin"]
+    const IP = customData["IP"];
+    const href = [IP + "signin"];
 
     setShowActBar(true);
     let response = await axios
@@ -81,7 +83,8 @@ export default function Signin({ navigation }) {
           setIsModalVisible(true);
         } else {
           console.log(res.data);
-          setAuth(res.data["name"])
+          setAuth(res.data["name"]);
+          setEmail(data["email"]);
           navigation.navigate("OTP", {
             otp: res.data["otp"],
           });
@@ -101,7 +104,7 @@ export default function Signin({ navigation }) {
         visible={isModalVisible}
         nRequestClose={() => changeModalVisible(false)}
       >
-        <ErrorModal changeModalVisible={changeModalVisible} />
+        <ErrorModal changeModalVisible={changeModalVisible} emailText={"This Email entered is invalid!"}/>
       </Modal>
 
       <View style={styles.header}>
@@ -126,7 +129,7 @@ export default function Signin({ navigation }) {
             <View style={styles.button}>
               <TouchableOpacity
                 onPress={signinnow}
-                style={[styles.signIn, { backgroundColor: "#42c0fb" }]}
+                style={[styles.signIn, { backgroundColor: colorData["primary"] }]}
               >
                 <Text style={[styles.textSign, { color: "white" }]}>
                   Sign In
@@ -136,10 +139,10 @@ export default function Signin({ navigation }) {
                 onPress={() => navigation.navigate("Signup")}
                 style={[
                   styles.signIn,
-                  { borderColor: "#42c0fb", borderWidth: 2 },
+                  { borderColor: colorData["primary"], borderWidth: 2 },
                 ]}
               >
-                <Text style={[styles.textSign, { color: "#42c0fb" }]}>
+                <Text style={[styles.textSign, { color: colorData["primary"] }]}>
                   Sign Up
                 </Text>
               </TouchableOpacity>
@@ -154,7 +157,7 @@ export default function Signin({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#42c0fb",
+    backgroundColor: colorData["primary"],
   },
   header: {
     flex: 1,
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
     paddingBottom: 5,
-    paddingTop:5
+    paddingTop: 5,
   },
   actionError: {
     flexDirection: "row",

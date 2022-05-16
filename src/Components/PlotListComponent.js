@@ -7,26 +7,11 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import SearchHomeComponent from "./SearchHomeComponent";
+import LeadListComponent from "./LeadListComponent";
 import HomeComponent from "./HomeComponent";
 
 export default function PlotList(props) {
   const plotData = props.data;
-
-  // const arr = [
-  //   "Lead1",
-  //   "Lead2",
-  //   "Lead3",
-  //   "LeadV1",
-  //   "LeadV2",
-  //   "LeadV3",
-  //   "LeadV4",
-  //   "LeadV5",
-  //   "LeadV6",
-  //   "LeadAVL",
-  //   "LeadAVR",
-  //   "LeadAVF",
-  // ];
 
   return (
 
@@ -35,7 +20,7 @@ export default function PlotList(props) {
       data={plotData}
       renderItem={({ index, item }) => (
         
-        <SearchHomeComponent title={item} setShowImage={props.setShowImage} setImageIndex={props.setImageIndex} cardIndex={index} />
+        <LeadListComponent title={item} setShowImage={props.setShowImage} setImageIndex={props.setImageIndex} cardIndex={index} />
         )}
         keyExtractor={(item) => item}
         />

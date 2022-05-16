@@ -13,6 +13,9 @@ import {
 import * as Animatable from "react-native-animatable";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
+
+const colorData=require("../colors.json")
+
 export default function OTP({ navigation }) {
   const route = useRoute();
   const [data, setData] = useState({
@@ -82,15 +85,15 @@ export default function OTP({ navigation }) {
         <View style={styles.button}>
           <TouchableOpacity
             onPress={verifyotp}
-            style={[styles.signIn, { backgroundColor: "#42c0fb" }]}
+            style={[styles.signIn, { backgroundColor: colorData["primary"] }]}
           >
             <Text style={[styles.textSign, { color: "white" }]}>Veify OTP</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("Signin")}
-            style={[styles.signIn, { borderColor: "#42c0fb", borderWidth: 2 }]}
+            style={[styles.signIn, { borderColor: colorData["primary"], borderWidth: 2 }]}
           >
-            <Text style={[styles.textSign, { color: "#42c0fb" }]}>Go Back</Text>
+            <Text style={[styles.textSign, { color: colorData["primary"] }]}>Go Back</Text>
           </TouchableOpacity>
         </View>
       </Animatable.View>
@@ -101,7 +104,7 @@ export default function OTP({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#42c0fb",
+    backgroundColor:colorData["primary"],
   },
   header: {
     flex: 1,

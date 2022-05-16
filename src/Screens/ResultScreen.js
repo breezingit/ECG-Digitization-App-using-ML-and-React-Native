@@ -34,20 +34,8 @@ export default function Results({ navigation }) {
   const [showImage, setShowImage] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
   const [imageName, setImageName] = useState("Lead1");
-  const arr = [
-    "Lead1",
-    "Lead2",
-    "Lead3",
-    "LeadV1",
-    "LeadV2",
-    "LeadV3",
-    "LeadV4",
-    "LeadV5",
-    "LeadV6",
-    "LeadAVL",
-    "LeadAVR",
-    "LeadAVF",
-  ];
+  const [plotData, setPlotData] = useState(customData["arr"]);
+
 
   useEffect(() => {
     getImage();
@@ -65,28 +53,10 @@ export default function Results({ navigation }) {
     const href = [IP + "final"];
 
     let response = await axios.get(`${href}`);
-    console.log(response);
     setImageData(response.data);
-    // console.log(response.data)
     // setImageData(response.data)
     setDisableButton(true);
   };
-
-  //  const getDict = async() =>{
-  //   const IP = customData["IP"]
-  //   const href= [IP + "ok"]
-
-  //   var finalDict=[]
-  //   for(var i=0;i<12;i+=1){
-  //     var count=i+1
-  //     let response = await axios.post(`${href}`, {count});
-  //     finalDict=[...finalDict, response.data]
-  //   }
-
-  //   setImageData(finalDict)
-  //   console.log(imageData)
-  //   setDisableButton(true)
-  //  }
 
   const saveImage = async (searchPhrase) => {
 
@@ -100,7 +70,9 @@ export default function Results({ navigation }) {
     let response = await axios
       .post(`${href}`, { searchPhrase })
       // .post("https://dep-ecg.herokuapp.com/savename", { searchPhrase })
-      .then((res) => {});
+      .then((res) => {
+
+      });
 
     setIncrement(!increment);
     navigation.navigate("Home");
@@ -115,7 +87,8 @@ export default function Results({ navigation }) {
       return;
     } else {
       setImageIndex(imageIndex + 1);
-      setImageName(arr[imageIndex])
+      // setImageName(arr[imageIndex])
+
     }
   };
 
@@ -124,9 +97,10 @@ export default function Results({ navigation }) {
       return;
     } else {
       setImageIndex(imageIndex - 1);
-      setImageName(arr[imageIndex])
+      // setImageName(arr[imageIndex])
     }
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -151,7 +125,7 @@ export default function Results({ navigation }) {
           </View>
           <View style={{ flex: 0.65, paddingBottom: 10, alignSelf: "stretch" }}>
             <PlotList
-              data={arr}
+              data={plotData}
               setShowImage={setShowImage}
               setImageIndex={setImageIndex}
             />
@@ -164,9 +138,9 @@ export default function Results({ navigation }) {
       ) : (
         // null
         <View style={{flex:0.9}}>
-          <View style={styles.nameText}>
+          {/* <View style={styles.nameText}>
             <Text style={styles.actualText}>{arr[imageIndex]}</Text>
-          </View>
+          </View> */}
           <Image
             source={{ uri: "data:image/jpeg;base64," + imageData[imageIndex] }}
             style={styles.image}
@@ -176,7 +150,7 @@ export default function Results({ navigation }) {
               position: "absolute",
               flexDirection: "row",
               alignItems: "flex-end",
-              bottom: 150,
+              bottom: 130,
             }}
           >
             <TouchableOpacity

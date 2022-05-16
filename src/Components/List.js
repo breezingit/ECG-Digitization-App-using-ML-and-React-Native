@@ -6,7 +6,8 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
-import SearchHomeComponent from "./SearchHomeComponent";
+import SearchListComponent from "./SearchListComponent";
+// import LeadListComponent from "./LeadListComponent"
 // definition of the Item, which will be rendered in the FlatList
 const Item = (props) => (
   <View style={styles.item}>
@@ -19,13 +20,13 @@ const List = ({ searchPhrase, setClicked, data }) => {
   const renderItem = ({ item }) => {
     // when no input, show all
     if (searchPhrase === "") {
-      return <SearchHomeComponent title={item} 
+      return <SearchListComponent title={item} 
           index={item.key}
       />;
     }
     // filter of the name
     if (item.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
-      return <SearchHomeComponent title={item} 
+      return <SearchListComponent title={item} 
           index={item.key}
       />;
     }

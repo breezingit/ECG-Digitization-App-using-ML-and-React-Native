@@ -1,23 +1,28 @@
 import psycopg2
-
-# data=request.get_json()
-
-data={}
-data["count"]=1
-
 conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
                     password = "dep:1234", host = "dep.postgres.database.azure.com")
     
 cur = conn.cursor()
 
-query="SELECT biodata from JImage ORDER BY ID DESC LIMIT 1 OFFSET " + str(data["count"])
+personName="yashpriyadarshi465@gmail.com"
+
+query="""SELECT Name, Date, Result FROM Images WHERE person = '{}';""".format(personName)
 
 cur.execute(query)
 rows = cur.fetchall()
 
-img_str=""
+nameList={}
 for data in rows:
-    img_str=data[0]
-    break
+    if data[0] not in nameList:
+        nameList[data[0]]=data
+    else:
+        continue
 
-print(img_str)
+
+for index in nameList:
+    item= list(nameList[index])
+    item[1]=str(item[1])
+    nameList[index]=item
+
+print(nameList)
+

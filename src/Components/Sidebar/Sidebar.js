@@ -13,7 +13,7 @@ const CustomDrawer=(props)=>{
         <View style={{flex:1}}>
 
             <DrawerContentScrollView {...props}
-                contentContainerStyle={{backgroundColor:"#42c0fb"}}>
+                contentContainerStyle={{backgroundColor:"#0077b6"}}>
                     <ImageBackground source={require('../../../assets/backim.jpg')} style={{padding:20}}>
                         <Image source={require('../../../assets/giticon.png')}
                             style={styles.image}
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     user:{
         color:"#fff",
         fontSize:18,
-        fontFamily:"Roboto-Medium",
+        fontFamily:"Oswald",
         marginLeft:5
     },
     drawerList:{

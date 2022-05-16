@@ -1,16 +1,25 @@
 import React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, TextInput } from 'react-native';
-
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, TextInput , ActivityIndicator} from 'react-native';
+import * as Progress from 'react-native-progress';
 
 const HEIGHT_MODAL=170;
 const SimpleModal=({ searchPhrase,setSearchPhrase ,saveImage, changeModalVisible})=>{
 
     const [personName, setPersonName]=useState("")
+    const [progress, setProgess]= useState(false)
+
+    const saveImagefunc=()=>{
+        setProgess(true)
+        saveImage(personName)
+    }
 
     return(
         <View style={styles.container}>
-            <View style={styles.modal}>
+            {
+                progress===false
+                ?
+            (<View style={styles.modal}>
                 <Text style={styles.nameContainer}>Input Name</Text>
                 <TextInput
                     style={styles.input}
@@ -24,13 +33,16 @@ const SimpleModal=({ searchPhrase,setSearchPhrase ,saveImage, changeModalVisible
                             CANCEL    
                         </Text> 
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={()=>saveImage(personName)}>
+                    <TouchableOpacity style={styles.button} onPress={saveImagefunc}>
                         <Text style={{color:"white"}}>
                             OK    
                         </Text> 
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View>)
+                :
+                <Progress.CircleSnail color={['red', 'green', 'blue']} />
+                }
 
         </View>
     )
@@ -50,7 +62,7 @@ const styles=StyleSheet.create({
         backgroundColor:'#42c0fb',
         borderRadius:10,
         // alignItems:'center',
-        // justifyContent:'center',
+        justifyContent:'center',
         padding:10
         // borderColor:'black',
         // borderWidth:5

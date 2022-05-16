@@ -13,9 +13,9 @@ def generateOTP(): # This function will generate an otp to the given gmailID
 
 
 def sendOTP(gmail, otp): # This function will send an otp to the given gmailID
-    senderid = "pehchaantesting@gmail.com"
-    senderpswd = "!@#123qwe"
-    msg = """Subject: OTP for Pehchaan Admin\n\n""" + otp + " is your OTP."
+    senderid = "ecgdigitization@gmail.com"
+    senderpswd = "ecg@1234"
+    msg = """Subject: OTP for ECG APP\n\n""" + otp + " is your OTP."
     s = smtplib.SMTP('smtp.gmail.com', 587)  # Create an SMTP session
     s.starttls()  # start TLS for security
     s.login(senderid, senderpswd)  # Authentication by sender login

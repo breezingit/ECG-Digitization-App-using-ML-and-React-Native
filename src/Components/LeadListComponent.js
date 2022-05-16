@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {  StyleSheet, Text, StatusBar, TouchableOpacity} from "react-native";
 import {Card} from 'react-native-paper' 
 
-export default function SearchHomeComponent({title, setShowImage,setImageIndex, cardIndex}){
+export default function LeadListComponent({title, setShowImage,setImageIndex, cardIndex}){
 
 
     const cardPress=()=>{
@@ -18,7 +18,7 @@ export default function SearchHomeComponent({title, setShowImage,setImageIndex, 
       <Card.Actions style={{justifyContent:"space-between"}}>
       </Card.Actions>
     </Card>
-   </TouchableOpacity>     
+   </TouchableOpacity>    
     )
 }
 

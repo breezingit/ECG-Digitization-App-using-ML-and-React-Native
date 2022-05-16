@@ -9,7 +9,7 @@ import cv2
 import psycopg2
 import json
 from otp import *
-from test7 import getScanned
+from computer_vision_run import getScanned
 import json
 app = Flask(__name__)
 
@@ -55,7 +55,7 @@ def final():
         image.save(buffered, format="JPEG")
         img_str = base64.b64encode(buffered.getvalue())
         # img_str.decode("utf-8")
-        imageStrData.append(img_str.decode())
+        imageStrData.append(img_str)
 
     
     for img_str in imageStrData:
@@ -66,35 +66,13 @@ def final():
     imgdict={}
     count=0
     for img in imageStrData:
-        imgdict[count]=img
+        imgdict[count]=img.decode()
         count+=1
     
     conn.commit()
     conn.close()
     return imgdict
     # return "DONE"
-
-# @app.route("/ok", methods=["POST"])
-# def ok():
-
-#     data=request.get_json()
-#     # print(data)
-#     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
-#                         password = "dep:1234", host = "dep.postgres.database.azure.com")
-        
-#     cur = conn.cursor()
-
-#     query="SELECT biodata from JImage ORDER BY ID DESC LIMIT 1 OFFSET " + str(data["count"])
-
-#     cur.execute(query)
-#     rows = cur.fetchall()
-
-#     img_str=""
-#     for data in rows:
-#         img_str=data[0]
-#         break
-
-#     return img_str.tobytes()
 
 
 @app.route("/savename",methods=["POST"])
@@ -134,25 +112,28 @@ def getData():
         
     cur = conn.cursor()
 
-    personName="yashpriyadarshi465@gmail.com"
+    # personName="yashpriyadarshi465@gmail.com"
+    print(data)
+    personName= data["email"]
     
     query="""SELECT Name, Date, Result FROM Images WHERE person = '{}';""".format(personName)
 
     cur.execute(query)
     rows = cur.fetchall()
     
-    
     nameList={}
-    count=0
     for data in rows:
-        nameList[count]=data
-        count+=1
-    
-    newNameList={}
+        if data[0] not in nameList:
+            nameList[data[0]]=data
+        else:
+            continue
+
+
     for index in nameList:
         item= list(nameList[index])
         item[1]=str(item[1])
         nameList[index]=item
+
     return nameList
     
 @app.route("/signin", methods=["POST"])
@@ -200,20 +181,23 @@ def openimage():
     
     rows = cur.fetchall()
     
-    imageData=""
+    imageList=[]
+    
     for data in rows:
-        imageData=data[0]
-  
-    img_str=bytes(imageData)
-    # pil_image = Image.open(BytesIO(bytes(imageData)))
-    # open_cv_image = np.array(pil_image) 
-    # img1 = open_cv_image[:, :, ::-1].copy() 
-    # buffered = BytesIO()
-    # pil_image.save(buffered, format="JPEG")
-    # img_str = base64.b64encode(buffered.getvalue())
-    # img1.save("pillow.jpg")
-    # cv2.imwrite("filename.jpg", pil_image)
-    return img_str
+        imageList.append(data[0])
+
+    with open("imageToSave.png", "wb") as fh:
+        newData=imageList[0]
+        fh.write(newData)
+
+    imageDict={}
+    count=0
+    for img in imageList:
+        # img_str.decode("utf-8")
+        imageDict[count]=(img.tobytes()).decode("utf-8")
+        count+=1
+
+    return imageDict
     # return img_str
 
 @app.route("/delete", methods=["POST"])
@@ -243,17 +227,31 @@ def signup():
                         password = "dep:1234", host = "dep.postgres.database.azure.com")
         
     cur = conn.cursor()
-    query= """INSERT INTO USERS(Name, Email) VALUES(%s,%s);"""
-    val=(data["data"]["password"],data["data"]["email"])
-    cur.execute(query,val)
-    conn.commit()
-    conn.close()
+
+    query="""SELECT Email, Name FROM Users;"""
+    cur.execute(query)
+    rows = cur.fetchall()
     
-    
-    otp=generateOTP()
-    sendOTP(data["data"]["email"], otp)
-    dict={"otp": otp, "name": data["data"]["password"]}
-    return dict
+    found=False
+    for datas in rows:
+        if datas[0]==data["data"]["email"]:
+            found=True
+            break
+        
+    if found==True:
+        return "NO"
+    else:
+        query= """INSERT INTO USERS(Name, Email) VALUES(%s,%s);"""
+        val=(data["data"]["password"],data["data"]["email"])
+        cur.execute(query,val)
+        conn.commit()
+        conn.close()
+        
+        
+        otp=generateOTP()
+        sendOTP(data["data"]["email"], otp)
+        dict={"otp": otp, "name": data["data"]["password"]}
+        return dict
 
 
 # @app.route("/cancelimage", methods="POST")

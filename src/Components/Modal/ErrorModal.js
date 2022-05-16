@@ -4,14 +4,14 @@ import { StyleSheet, Text, View, TouchableOpacity, Dimensions, TextInput } from 
 
 
 const HEIGHT_MODAL=140;
-const ErrorModal=({changeModalVisible})=>{
+const ErrorModal=({changeModalVisible, emailText})=>{
 
 
     return(
         <View style={styles.container}>
             <View style={styles.modal}>
                 <Text style={styles.nameContainer}>ERROR</Text>
-                <Text style={styles.nameContainer}>The Email entered is invalid!</Text>
+                <Text style={styles.nameContainer}>{emailText}</Text>
                 <View style={styles.modalButtons}>
                     <TouchableOpacity style={styles.button} onPress={changeModalVisible}>
                         <Text style={{color:"white"}}>

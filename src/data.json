@@ -1,4 +1,18 @@
 {
     "IP": "http://172.21.12.205:5000/",
-    "short": "172.21.12.205"
+    "short": "172.21.12.205",
+    "arr":[
+        "Lead1",
+        "Lead2",
+        "Lead3",
+        "LeadV1",
+        "LeadV2",
+        "LeadV3",
+        "LeadV4",
+        "LeadV5",
+        "LeadV6",
+        "LeadAVL",
+        "LeadAVR",
+        "LeadAVF"
+    ]
 }

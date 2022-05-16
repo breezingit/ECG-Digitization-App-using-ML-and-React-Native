@@ -23,7 +23,7 @@ import {
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
 import OptionsModal from "./Modal/OptionsModal";
-import { useAuth } from "../Context/AuthContext";
+import { useAuth, useEmail } from "../Context/AuthContext";
 
 const customData = require("../data.json");
 
@@ -47,17 +47,17 @@ export default function SearchArea({ navigation }) {
   function myFunction(value, index, array) {
     return value[0];
   }
-  const userName = useAuth();
+
+  const email= useEmail()
 
   const getData = async () => {
     setIsLoading(true);
 
     const href = ["" + IP + "getdata"];
-    let response = await axios.post(`${href}`, { userName });
+    let response = await axios.post(`${href}`, { email });
     const result = Object.values(response.data);
 
     const resultFinal = result.map(myFunction);
-    console.log(resultFinal);
     setPeople(resultFinal);
     setDataLength(result.length);
     setNameDateData(result);
@@ -109,7 +109,7 @@ export default function SearchArea({ navigation }) {
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={{ fontSize: 20, marginRight: 3 }}>SortBy</Text>
-            <Icon name="sun" size={15} />
+            <Icon name="angle-down" size={20} />
           </View>
         </TouchableOpacity>
       </View>

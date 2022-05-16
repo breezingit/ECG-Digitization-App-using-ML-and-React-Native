@@ -26,6 +26,8 @@ import {
 import SearchScreen from "./src/Screens/SearchScreen";
 import { AuthProvider } from "./src/Context/AuthContext";
 
+const colorData = require("./src/colors.json")
+
 LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
@@ -145,7 +147,7 @@ export default function App() {
         drawerContent={(props) => <CustomDrawer {...props} />}
         screenOptions={{
           headerShown: false,
-          drawerActiveBackgroundColor: "#42c0fb",
+          drawerActiveBackgroundColor: colorData["primary"],
           drawerActiveTintColor: "#fff",
         }}
       >
@@ -153,7 +155,7 @@ export default function App() {
           name="Homepage"
           component={Home}
           options={{
-            drawerIcon: () => <Icon name="home" backgroundColor="#42c0fb" />,
+            drawerIcon: () => <Icon name="home" backgroundColor="#0077b6" />,
           }}
         />
       </Drawer.Navigator>
@@ -165,7 +167,7 @@ export default function App() {
       <PaperProvider theme={PaperDarkTheme}>
         <PeopleProvider>
           <NavigationContainer theme={DarkTheme}>
-            <HomeStack />
+            <LoginStack />
           </NavigationContainer>
         </PeopleProvider>
       </PaperProvider>

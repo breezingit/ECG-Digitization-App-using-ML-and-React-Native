@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   homecontainer: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop: StatusBar.currentHeight,
   },
   imgContainer: {
     flex: 1,
@@ -254,13 +253,4 @@ export class App extends Component {
 
 export default App;
 
-//
-// {
-//   (this.state.disableButton===false)
-//   ? (<ActivityIndicator size="large" color="#0000ff"/>)
-//   :
-//   (<View>
 
-//   </View>
-//   )
-// }
