@@ -21,6 +21,8 @@ import toServer from "../Components/toServer";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useIncrement, useSetIncrement } from "../Context/PeopleContext";
 import PlotList from "../Components/PlotListComponent";
+import { useEmail } from "../Context/AuthContext";
+
 const customData = require("../data.json");
 
 export default function Results({ navigation }) {
@@ -35,7 +37,8 @@ export default function Results({ navigation }) {
   const [imageIndex, setImageIndex] = useState(0);
   const [imageName, setImageName] = useState("Lead1");
   const [plotData, setPlotData] = useState(customData["arr"]);
-
+  
+  const email=useEmail()
 
   useEffect(() => {
     getImage();
@@ -66,9 +69,9 @@ export default function Results({ navigation }) {
 
     const IP = customData["IP"];
     const href = [IP + "savename"];
-
+    const data={searchPhrase, email}
     let response = await axios
-      .post(`${href}`, { searchPhrase })
+      .post(`${href}`, { data })
       // .post("https://dep-ecg.herokuapp.com/savename", { searchPhrase })
       .then((res) => {
 

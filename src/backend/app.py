@@ -78,10 +78,8 @@ def final():
 @app.route("/savename",methods=["POST"])
 def savename():
     
-    data =request.get_data()
-    output = data.decode()
-    res = json.loads(output)
-
+    data =request.get_json()
+    print(data)
     conn = psycopg2.connect(database ="postgres", user = "yashpriyadarshi",
                         password = "dep:1234", host = "dep.postgres.database.azure.com")
         
@@ -91,11 +89,11 @@ def savename():
     rows = cur.fetchall()
     
     imageData=""
-    for data in rows:
-        imageData=data[0]
+    for rowData in rows:
+        imageData=rowData[0]
         
-        query = """INSERT INTO Images(Name,biodata, Date) VALUES(%s,%s, CURRENT_DATE);"""
-        val=(res["searchPhrase"], imageData)
+        query = """INSERT INTO Images(Name,biodata, Date, person) VALUES(%s,%s, CURRENT_DATE, %s);"""
+        val=(data["data"]["searchPhrase"], imageData, data["data"]["email"])
         cur.execute(query,val)
     conn.commit()
     conn.close()
